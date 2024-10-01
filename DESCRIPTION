@@ -1,11 +1,16 @@
-Package: CRediT
-Title: What the Package Does (One Line, Title Case)
+Package: ContriBOT
+Title: Detection and extraction of Author Contribution statements, Acknowledgements, and ORCIDs from scientific papers
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: MIT + file LICENSE
+Authors@R:
+      c(
+      person("Vladislav", "Nachev", "vladislav.nachev@charite.de", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-0521-6153")),
+      person("Fyeqa", "Akram", role = "aut")
+      )
+Description: Detection and extraction of Author Contribution statements, Acknowledgements,
+and ORCIDs from scientific papers.
+License: AGPL (>= 3)
 Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
