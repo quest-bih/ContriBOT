@@ -132,7 +132,7 @@ contribution_detection <- function(PDF_text_sentences)
 
   table_titles <- c("appendix( \\d)? authors")
 
-  section_string <- paste0("(<section>)\\W+[\\d,\\W]*(", section_regexes, ")\\b")
+  section_string <- paste0("(<section>)[^\\w+][\\d,^\\w]*(", section_regexes, ")\\b")
   if (look_in_tables == TRUE) section_string <- paste0(section_string, "|", table_titles)
   # stringr::str_detect(PDF_text_sentence, data_availability)
   section_detections <- furrr::future_map_lgl(PDF_text_sentences,

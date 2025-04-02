@@ -20,6 +20,7 @@ library(yardstick)
                                                     "credit_roles" = .format_keyword_vector(x, end_boundary = TRUE),
                                                     "non_credit_roles" = .format_keyword_vector(x),
                                                     "equally" = .format_keyword_vector(x),
+                                                    
                                                     .format_keyword_vector(x, end_boundary = TRUE)
     ))
   
@@ -45,7 +46,7 @@ library(yardstick)
 #' @noRd
 .clean_sentences <- function(input_str) {
   cleaned_sentences <- stringr::str_replace_all(input_str, "\r\n", " ") |> 
-    stringr::str_remove_all(" (-|‐)|\U25A1|(?<=\\w)(-|‐)( |\n)") |> 
+    stringr::str_remove_all(" (-|‐)|\\u25a1|\\u200b|(?<=\\w)(-|‐)( |\n|)") |> 
     stringr::str_replace_all("fnal", "final") |> 
     stringr::str_replace_all("frst", "first") |> 
     stringr::str_replace_all("fgure", "figure") |>
