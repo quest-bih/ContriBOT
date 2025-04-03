@@ -90,8 +90,8 @@ qa_performance <- gold_set_unnested |>
             is_narrative = any(is_narrative, na.rm = TRUE),
             n_credit = sum(n_credit, na.rm = TRUE),
             cleaned_sentences = paste(sentence, collapse = ". "),
-            truth_credit = n_credit > 3 & !has_non_credit) |> 
-  mutate(credit_estimate = factor(truth_credit, levels = c(TRUE, FALSE)),
+            credit_estimate = n_credit > 3 & !has_non_credit) |> 
+  mutate(credit_estimate = factor(credit_estimate, levels = c(TRUE, FALSE)),
          credit_truth = factor(as.logical(CRT_Taxonomy, na.rm = TRUE), levels = c(TRUE, FALSE)))
 
 multi_metric <- metric_set(accuracy, sensitivity, specificity, ppv, npv, f_meas)
