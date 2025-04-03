@@ -26,7 +26,8 @@ orcid_section:
 orcid_link:
   - "(https?\\://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\w{4})|(https?.*orcid.*(\\d|X))"
   
-  "appendix( \\d)? authors"
+table_credit:
+  - "appendix( \\d)? authors"
 
 stop_sections:
   - "c ?o ?n ?f ?l ?i ?c ?t ?s?"

@@ -46,7 +46,7 @@ library(yardstick)
 #' @noRd
 .clean_sentences <- function(input_str) {
   cleaned_sentences <- stringr::str_replace_all(input_str, "\r\n", " ") |> 
-    stringr::str_remove_all(" (-|‐)|\\u25a1|\\u200b|(?<=\\w)(-|‐)( |\n|)") |> 
+    stringr::str_remove_all(" (-|‐)|\\u25a1|\\u200b|(?<=\\w)(-|‐)( |\n)") |> 
     stringr::str_replace_all("fnal", "final") |> 
     stringr::str_replace_all("frst", "first") |> 
     stringr::str_replace_all("fgure", "figure") |>
@@ -94,7 +94,7 @@ qa_performance <- gold_set_unnested |>
   mutate(credit_estimate = factor(truth_credit, levels = c(TRUE, FALSE)),
          credit_truth = factor(as.logical(CRT_Taxonomy, na.rm = TRUE), levels = c(TRUE, FALSE)))
 
-multi_metric <- metric_set(accuracy, sensitivity, specificity, ppv, npv)
+multi_metric <- metric_set(accuracy, sensitivity, specificity, ppv, npv, f_meas)
 multi_metric(qa_performance,
              truth = credit_truth, estimate = credit_estimate)
 
