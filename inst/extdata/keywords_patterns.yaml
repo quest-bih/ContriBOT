@@ -75,13 +75,11 @@ credit_roles:
   - "visuali(z|s)ations?|visuali(z|s)ed"
   - "writing[^\\w]+original[^\\w]+draft[^\\w]+(preparation)?|(original|first) draft|drafting|drafted"
   - "writing[^\\w]+review[^\\w]+(and|&)?[^\\w]+editing|reviewed|revised|reviewing|revisions|manuscript review"
-  # - "review\\s*[^.,;:]*"
-  # - "edit\\s*[^.,;:]*"
-  # - "original\\s*[^.,;:]*"
-  
+
 all_authors:
-  - "(all|the)( the)? author[^\\w]?s[^\\w]?"
+  - "(all|the)( the)? author[^\\w]?s[^\\w]?" # consider this
   - "(all|the) authors(have )? (read|revise|review|approve|critically)"
+  - "all authors.*manuscript"
   
 equally:
   - "contributed equally\\.?$"
@@ -163,6 +161,7 @@ non_credit_roles:
   - "database"
   - "derive"
   - "descri(pt|be)"
+  - "( |^)design"
   - "discussion"
   - "dissertation"
   - "document"
@@ -220,3 +219,4 @@ non_credit_roles:
   - "variable"
   - "verification"
   - "wave"
+

@@ -8,6 +8,7 @@ library(dplyr)
 library(writexl)
 library(stringr)
 library(testthat)
+library(here)
 
 
 # Creating virtual env
@@ -48,7 +49,7 @@ CRediT_Roles_Variations <- c(
 
 
 # Read the Excel file
-checking <- read_excel("Data/Author_Contributions.xlsx", sheet = "Sheet1")
+checking <- read_excel(here("data", "Author_Contributions.xlsx"), sheet = "Sheet1")
 
 
 # Step 1: Create a new column based on the filter conditions

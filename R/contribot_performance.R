@@ -77,10 +77,13 @@ gold_set_unnested <- gold_set |>
   mutate(is_all_authors = str_detect(sentence, keyword_list$all_authors),
          has_credit_role = str_detect(sentence, keyword_list$credit_roles),
          n_credit = str_count(sentence, keyword_list$credit_roles),
-         has_noncredit_role = str_detect(sentence, keyword_list$non_credit_roles),
+         has_noncredit_role = str_detect(sentence, keyword_list$non_credit_roles) &
+           !is_all_authors,
          is_equally = str_detect(sentence, keyword_list$equally),
-         is_narrative = str_detect(sentence, keyword_list$narrative),
+         is_narrative = str_detect(sentence, keyword_list$narrative) &
+           !is_all_authors & !is_equally,
          is_responsibility = str_detect(sentence, keyword_list$responsibility))
+
 
 qa_performance <- gold_set_unnested |> 
   group_by(doi) |> 
@@ -90,9 +93,14 @@ qa_performance <- gold_set_unnested |>
             is_narrative = any(is_narrative, na.rm = TRUE),
             n_credit = sum(n_credit, na.rm = TRUE),
             cleaned_sentences = paste(sentence, collapse = ". "),
-            credit_estimate = n_credit > 3 & !has_non_credit) |> 
+            credit_estimate = n_credit > 3 & !has_non_credit,
+            contrib_estimate = n_credit > 0 | has_non_credit | is_narrative) |> 
   mutate(credit_estimate = factor(credit_estimate, levels = c(TRUE, FALSE)),
-         credit_truth = factor(as.logical(CRT_Taxonomy, na.rm = TRUE), levels = c(TRUE, FALSE)))
+         credit_truth = factor(as.logical(CRT_Taxonomy, na.rm = TRUE), levels = c(TRUE, FALSE)),
+         contrib_estimate = factor(contrib_estimate, levels = c(TRUE, FALSE)),
+         contrib_truth = factor(as.logical(Contributions, na.rm = TRUE), levels = c(TRUE, FALSE)),
+         narrative_estimate = factor(is_narrative, levels = c(TRUE, FALSE)),
+         narrative_truth = factor(as.logical(Narrative, na.rm = TRUE), levels = c(TRUE, FALSE)))
 
 multi_metric <- metric_set(accuracy, sensitivity, specificity, ppv, npv, f_meas)
 multi_metric(qa_performance,
@@ -101,6 +109,10 @@ multi_metric(qa_performance,
 qa_performance |>
   conf_mat(truth = credit_truth, estimate = credit_estimate) |>
   autoplot(type = "heatmap")
+
+qa_performance |> 
+  filter(credit_truth == FALSE, credit_estimate == TRUE) |> 
+  pull(doi)
 
 qa_narrative_credit <- gold_set_unnested |> 
   group_by(doi) |> 
