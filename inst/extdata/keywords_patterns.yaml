@@ -207,6 +207,7 @@ non_credit_roles:
   - "simulation"
   - "stakeholder"
   - "submit"
+  - "suggestion"
   - "surg(ery|ic)"
   - "survey"
   - "synth"

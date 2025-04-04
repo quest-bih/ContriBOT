@@ -54,7 +54,6 @@ library(yardstick)
   return(cleaned_sentences)
 }
 
-
 #' unnest sentences in tibble
 #' @noRd
 unnest_statements <- function(input_tib, input_col) {
@@ -102,7 +101,7 @@ qa_performance <- gold_set_unnested |>
          narrative_estimate = factor(is_narrative, levels = c(TRUE, FALSE)),
          narrative_truth = factor(as.logical(Narrative, na.rm = TRUE), levels = c(TRUE, FALSE)))
 
-multi_metric <- metric_set(accuracy, sensitivity, specificity, ppv, npv, f_meas)
+multi_metric <- metric_set(accuracy, ppv, sensitivity, specificity, npv, f_meas)
 multi_metric(qa_performance,
              truth = credit_truth, estimate = credit_estimate)
 
