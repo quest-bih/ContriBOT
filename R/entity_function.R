@@ -1,24 +1,73 @@
 # entity_functions.R
 
+#Clean text (removing carriages and new line)
+clean_text <- function(text) {
+  # Remove hyphen followed by optional spaces before newline
+  cleaned_text <- gsub("-\\s*\n", "", text)
 
-check_narrative <- function(statement, filter_keywords) {
-  # Convert statement to lowercase for case-insensitive matching
-  statement <- tolower(statement)
+  # Replace remaining newlines (\n) with spaces
+  cleaned_text <- gsub("\n+", " ", cleaned_text)
 
-  # Check if any of the filter_keywords are in the statement
-  for (keyword in filter_keywords) {
-    if (grepl(keyword, statement)) {
-      return(1)  # Return 1 if any keyword is found
-    }
+  # Replace remaining carriage returns (\r) with spaces
+  cleaned_text <- gsub("\r", "", cleaned_text)
+
+  # Remove extra spaces between words (multiple spaces replaced with one)
+  cleaned_text <- gsub("\\s+", " ", cleaned_text)
+
+  # Trim leading and trailing whitespace
+  cleaned_text <- trimws(cleaned_text)
+  return(cleaned_text)
+}
+
+format_keyword_vector <- function(keywords, end_boundary = FALSE) {
+  # typically word boundaries are added in the beginning only to allow for different possible endings
+  if (end_boundary) {
+    keywords_formatted <- paste0("\\b", keywords, "\\b")
+  } else {
+    keywords_formatted <- paste0("\\b", keywords)
   }
+  # collapse keywords into one string with OR symbol between them and convert to lowercase
+  keywords_formatted <- paste(keywords_formatted, collapse = "|")
 
-  return(0)  # Return 0 if no keyword is found
+  return(keywords_formatted)
+}
+
+create_keyword_list <- function()
+{
+  # read regular expression dictionaries from yaml file
+  # yaml_path <- system.file("extdata", "keywords_patterns.yaml", package = "ContriBOT")
+  yaml_path <- here::here("config", "Keywords.yaml")
+  keyword_list <- yaml::read_yaml(file.path(yaml_path))
+
+  # add conditional formatting for some dictionaries
+  keyword_list <- keyword_list |>
+    purrr::map2(names(keyword_list), \(x, y) switch(y,
+                                                    "Verbs_keywords" = format_keyword_vector(x, end_boundary = TRUE),
+                                                    "CRediT_Roles_Variations" = format_keyword_vector(x),
+                                                    "CRediT_Roles" = format_keyword_vector(x),
+                                                    "all_authors" = format_keyword_vector(x),
+                                                    "criteriaship_keywords" = format_keyword_vector(x),
+
+                                                    format_keyword_vector(x, end_boundary = TRUE)
+    ))
+
+  return(keyword_list)
+}
+
+# Function to get the pattern for author-related statements
+get_author_pattern <- function() {
+  return("(All authors|The authors|All the authors|The author\\(s\\))([^\\.]*?)(\\.|$)")
+}
+
+# Function to get the pattern for "contributed equally"
+get_contributed_equal_pattern <- function() {
+  return(".*contributed equally.*?\\.")  # This will match any "contributed equally" phrase and the sentence ending
 }
 
 # Extract roles from Statements
 Extract_roles <- function(df, column_name, keywords) {
   # Create a new data frame with columns: Original Text, Matched Keywords, Modified Text
-  df_result <- df[, column_name, drop = FALSE]
+  df_result <- df
 
   # Add the Matched_Keywords and Modified_Text columns
   df_result$Matched_Keywords <- NA
@@ -174,8 +223,6 @@ extract_entities <- function(text) {
               modified_text = modified_text))
 }
 
-
-
 remove_initials_from_text <- function(text) {
 
   # Split the text into words
@@ -186,20 +233,22 @@ remove_initials_from_text <- function(text) {
     # Remove punctuation by keeping only alphanumeric characters
     cleaned_word <- gsub("[^A-Za-z0-9]", "", word)  # Keep only letters and numbers
 
+    # Skip the word if it is NA
+    if (is.na(cleaned_word)) {
+      return(NULL)
+    }
+
     # Check if the word contains initials (like "A.B.C."), i.e., letters with dots between them
     if (grepl("([A-Za-z])\\.([A-Za-z])", word)) {
       return(NULL)  # Remove the word if it has initials with dots (like "F.D.G.S.")
     }
-    # Skip removing "and" (case-insensitive)
-    # if (tolower(cleaned_word) == "and") {
-    #   return(word)  # Keep "and"
-    # }
+
     # If the word is "all", keep it regardless of length
     if (tolower(cleaned_word) == "all") {
       return(word)  # Keep "all" even if it's short
     }
 
-    # If the cleaned word length is 4 or more, keep it, otherwise NULL
+    # Check for NULL or NA in cleaned_word before using nchar
     if (nchar(cleaned_word) >= 4) {
       return(word)  # Keep the original word (with punctuation)
     } else {
@@ -241,7 +290,6 @@ extract_unique_words <- function(text) {
 }
 
 
-
 # Function to filter words and create an extra column showing matched words
 filter_roles <- function(df, column_name, keywords) {
   # Convert the column to character (if it's not already)
@@ -274,4 +322,147 @@ filter_roles <- function(df, column_name, keywords) {
 
   # Return the modified dataframe
   return(df)
+}
+# Function to process each narrative row
+process_narrative <- function(narrative) {
+  # Preprocess the text: lowercase, remove punctuation, and numbers
+  narrative_clean <- tolower(narrative)
+  narrative_clean <- removePunctuation(narrative_clean)
+  narrative_clean <- removeNumbers(narrative_clean)
+
+  # Split the cleaned text into words
+  words <- str_split(narrative_clean, " ", simplify = TRUE)
+
+  # Stem the words
+  narrative_stemmed <- wordStem(words)
+
+  # Combine the stemmed words back into a sentence
+  narrative_stemmed_text <- paste(narrative_stemmed, collapse = " ")
+
+  # Check for the presence of CRediT roles
+  roles_found <- sapply(CRediT_Roles_stemmed, function(role) {
+    grepl(role, narrative_stemmed_text, ignore.case = TRUE)
+  })
+
+  # Extract the detected roles
+  detected_roles <- Roles[roles_found]
+
+  return(paste(detected_roles, collapse = ", "))  # Join detected roles as a comma-separated string
+}
+
+
+performance_matrix <- function(df1, col1, df2, col2) {
+  # Ensure both data frames have the same number of rows to avoid index out of range errors
+  n_rows <- min(nrow(df1), nrow(df2))  # Limit the comparison to the smaller number of rows
+
+  # Calculate exact matches excluding NAs
+  exact_matches <- sum(df1[[col1]][1:n_rows] == df2[[col2]][1:n_rows], na.rm = TRUE)
+
+  # Count where both columns have NA
+  na_matches <- sum(is.na(df1[[col1]][1:n_rows]) & is.na(df2[[col2]][1:n_rows]))
+
+  # Count where one column is NA and the other is not
+  na_mismatches <- sum((is.na(df1[[col1]][1:n_rows]) & !is.na(df2[[col2]][1:n_rows])) |
+                         (!is.na(df1[[col1]][1:n_rows]) & is.na(df2[[col2]][1:n_rows])))
+
+  # Calculate total mismatches excluding NAs
+  mismatches <- sum(df1[[col1]][1:n_rows] != df2[[col2]][1:n_rows], na.rm = TRUE)
+
+  # Create a logical vector for mismatches, excluding NAs
+  mismatch_logical <- !is.na(df1[[col1]][1:n_rows]) & !is.na(df2[[col2]][1:n_rows]) & (df1[[col1]][1:n_rows] != df2[[col2]][1:n_rows])
+
+  # Create a data frame of mismatched rows, with indices and values
+  mismatched_rows <- data.frame(
+    Index = which(mismatch_logical) ,  # Adjust index to account for Excel's row 2 starting (R starts at 1)
+    Expected = df2[[col2]][mismatch_logical],  # values from df2 (expected)
+    Actual = df1[[col1]][mismatch_logical]  # values from df1 (actual)
+  )
+
+  # Return a list of results
+  result <- list(
+    exact_matches = exact_matches,
+    na_matches = na_matches,
+    na_mismatches = na_mismatches,
+    mismatches = mismatches,
+    mismatched_rows = mismatched_rows  # Include the mismatched rows data frame
+  )
+
+  return(result)
+}
+
+# Function to capture text until the first period or comma
+extract_roles_narrative <- function(text) {
+  # Parse the text and get part-of-speech tagging
+  parsed_text <- spacy_parse(text)
+
+  # Initialize a vector to store the segments
+  segments <- character()
+
+  # Loop through the parsed text to identify nouns and extract text after them
+  for (i in 1:(nrow(parsed_text) - 1)) {
+    # Check if the current word is a noun (NOUN)
+    if (parsed_text$pos[i] == "VERB") {
+      # Capture everything after the noun up to the period or comma
+      sentence_end <- which(parsed_text$token == "." | parsed_text$token == ".")[which(parsed_text$token == "." | parsed_text$token == ".") > i][1]
+
+      # Extract the portion of text after the noun and before the period or comma
+      if (!is.na(sentence_end)) {
+        segment <- paste(parsed_text$token[i:sentence_end], collapse = " ")
+
+        # Replace period or comma at the end with a comma
+        segment <- gsub("[.,]$", ",", segment)
+
+        segments <- c(segments, segment)
+      }
+    }
+  }
+
+  # Return the joined result with commas separating the segments
+  return(paste(segments, collapse = ""))
+}
+
+
+# Function to check if any required word is in the text (case-insensitive using str_detect)
+check_matching_words <- function(text, required_words) {
+  # Initialize vectors to store matched and non-matched words
+  matched_words <- character(0)
+  non_matched_words <- character(0)
+
+  # Convert the text to lowercase for case-insensitive comparison
+  text_lower <- tolower(text)
+
+  # Check which required words are present in the text using str_detect
+  for (word in required_words) {
+    if (str_detect(text_lower, fixed(tolower(word)))) {
+      matched_words <- c(matched_words, word)
+    } else {
+      non_matched_words <- c(non_matched_words, word)
+    }
+  }
+
+  # If any words are matched, return 1 for match status and the matched words
+  match_status <- if (length(matched_words) > 0) 1 else 0
+
+  # Return the match status, matched words, and non-matched words
+  return(c(match_status, paste(matched_words, collapse = ", "), paste(non_matched_words, collapse = ", ")))
+}
+
+find_roles_and_remaining <- function(text) {
+  # Remove leading/trailing spaces and replace multiple spaces with a single space
+  cleaned_text <- gsub("\\s+", " ", trimws(text))
+
+  # Split the cleaned text into individual phrases based on commas
+  phrases <- unlist(strsplit(cleaned_text, ",\\s*"))
+
+  # Check each phrase against the pattern and get the matched phrases
+  matched_phrases <- phrases[grepl(pattern, phrases, ignore.case = TRUE)]
+
+  # Get the unmatched phrases by excluding the matched ones
+  unmatched_phrases <- phrases[!grepl(pattern, phrases, ignore.case = TRUE)]
+
+  # Return matched and unmatched as strings, joined by commas, or NA if none found
+  matched_text <- if (length(matched_phrases) > 0) paste(matched_phrases, collapse = ", ") else NA
+  unmatched_text <- if (length(unmatched_phrases) > 0) paste(unmatched_phrases, collapse = ", ") else NA
+
+  return(c(matched_text, unmatched_text))
 }
