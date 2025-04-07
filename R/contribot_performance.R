@@ -81,7 +81,9 @@ gold_set_unnested <- gold_set |>
          is_equally = str_detect(sentence, keyword_list$equally),
          is_narrative = str_detect(sentence, keyword_list$narrative) &
            !is_all_authors & !is_equally,
-         is_responsibility = str_detect(sentence, keyword_list$responsibility))
+         is_responsibility = str_detect(sentence, keyword_list$responsibility),
+         is_contrib = (n_credit > 0 | has_noncredit_role | is_narrative) &
+           !is_all_authors & !is_equally)
 
 
 qa_performance <- gold_set_unnested |> 
@@ -93,7 +95,8 @@ qa_performance <- gold_set_unnested |>
             n_credit = sum(n_credit, na.rm = TRUE),
             cleaned_sentences = paste(sentence, collapse = ". "),
             credit_estimate = n_credit > 3 & !has_non_credit,
-            contrib_estimate = n_credit > 0 | has_non_credit | is_narrative) |> 
+            contrib_estimate = any(is_contrib, na.rm = TRUE)
+            ) |> 
   mutate(credit_estimate = factor(credit_estimate, levels = c(TRUE, FALSE)),
          credit_truth = factor(as.logical(CRT_Taxonomy, na.rm = TRUE), levels = c(TRUE, FALSE)),
          contrib_estimate = factor(contrib_estimate, levels = c(TRUE, FALSE)),
@@ -109,6 +112,22 @@ qa_performance |>
   conf_mat(truth = credit_truth, estimate = credit_estimate) |>
   autoplot(type = "heatmap")
 
+multi_metric(qa_performance,
+             truth = narrative_truth, estimate = narrative_estimate)
+
+qa_performance |>
+  conf_mat(truth = narrative_truth, estimate = narrative_estimate) |>
+  autoplot(type = "heatmap")
+
+multi_metric(qa_performance,
+             truth = contrib_truth, estimate = contrib_estimate)
+
+qa_performance |>
+  conf_mat(truth = contrib_truth, estimate = contrib_estimate) |>
+  autoplot(type = "heatmap")
+
+
+
 qa_performance |> 
   filter(credit_truth == FALSE, credit_estimate == TRUE) |> 
   pull(doi)
@@ -119,6 +138,8 @@ qa_narrative_credit <- gold_set_unnested |>
   filter(has_credit_role, !has_noncredit, !is_all_authors,
          is_narrative, CRT_Taxonomy == 0, n_credit > 3)
   
+
+
 qa_credit <- gold_set_unnested |> 
   group_by(doi) |> 
   mutate(has_noncredit = any(has_noncredit_role == TRUE, na.rm = TRUE)) |> 
