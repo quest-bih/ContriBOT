@@ -75,14 +75,27 @@ credit_roles:
   - "validations?|validated"
   - "visuali(z|s)ations?|visuali(z|s)ed"
   - "writing[^\\w]+original[^\\w]+draft[^\\w]+(preparation)?|(original|first) draft|drafting|drafted"
-  - "writing[^\\w]+review[^\\w]+(and|&)?[^\\w]+editing|reviewed|revised|reviewing|revisions|manuscript review"
+  - "writing[^\\w]+review[^\\w]+(and|&)?[^\\w]+editing|reviewed|reviewing|revisions|manuscript review"
   # - "review\\s*[^.,;:]*"
   # - "edit\\s*[^.,;:]*"
   # - "original\\s*[^.,;:]*"
+  
+n3_credit_roles:
+  - "conceptuali((s|z)ation|sm)|conceived|conceptualized"
+  - "investigations?|investigated"
+  - "writing[^\\w]+original[^\\w]+draft[^\\w]+(preparation)?|(original|first) draft|drafting|drafted"
+  - "writing[^\\w]+review[^\\w]+(and|&)?[^\\w]+editing|reviewed|reviewing|revisions|manuscript review"
+  - "methodology"
+
+
 
 all_authors:
-  - "(all|the)( the)? author[^\\w]?s[^\\w]?"
+ # - "(all|the)( the)? author[^\\w]?s[^\\w]?"
+ # - "^(all|the)( the)? author[^\\w]?s[^\\w]?"
+  - "^(all|the)( the)? author[^\\w]?s[^\\w]?(?!\\.$)"
   - "(all|the) authors(have )? (read|revise|review|approve|critically)"
+  - "had full access"
+  
 
 equally:
   - "contributed equally\\.?$"
@@ -100,6 +113,7 @@ responsibility:
   - "agree to "
   - "has the right"
   - "final responsibility"
+  - "had full access" 
 narrative:
   - "acted"
   - "acquired"
@@ -110,6 +124,7 @@ narrative:
   - "conducted"
   - "contributed"
   - "developed"
+  - "described"
   - "designed"
   - "drafted"
   - "established"
@@ -123,6 +138,7 @@ narrative:
   - "participated"
   - "planned"
   - "prepared"
+  - "performed"
   - "proposed"
   - "provided"
   - "responsible for"
@@ -158,7 +174,7 @@ non_credit_roles:
   - "allocation"
   - "animal"
   - "application"
-  #- "article"
+  - "article"
   - "assess"
   - "behavior"
   - "blot"
@@ -176,6 +192,7 @@ non_credit_roles:
   - "derive"
   - "descri(pt|be)"
   - "discussion"
+  - "study( design)"
   - "dissertation"
   - "document"
   - "ethic(al|s)"
@@ -214,13 +231,13 @@ non_credit_roles:
   - "protocol"
   - "reagent"
   - "recruit"
-  #- "result"
+  - "result"
   - "sample(s| size)"
   - "search"
   - "screening"
   - "simulation"
   - "stakeholder"
-  #- "submit"
+  - "submit"
   - "suggestions"
   - "surg(ery|ic)"
   - "survey"

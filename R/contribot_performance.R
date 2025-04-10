@@ -20,6 +20,7 @@ library(yardstick)
                                                     "credit_roles" = .format_keyword_vector(x, end_boundary = TRUE),
                                                     "non_credit_roles" = .format_keyword_vector(x),
                                                     "equally" = .format_keyword_vector(x),
+                                                    "n3_credit_roles"=.format_keyword_vector(x),
                                                     
                                                     .format_keyword_vector(x, end_boundary = TRUE)
     ))
@@ -61,7 +62,7 @@ unnest_statements <- function(input_tib, input_col) {
     tidytext::unnest_tokens(output = sentence, input = {{ input_col }},
                             token = "regex", pattern = "(?<!\\b[A-Za-z]?\\w)\\. ") |>
     tidytext::unnest_tokens(output = sentence, input = sentence, token = "regex",
-                            pattern = "(\\.|;) (?=all)")
+                            pattern = "(\\.|;|:) (?=all)")
   
   return(unnested_tib)
 }
@@ -76,6 +77,7 @@ gold_set_unnested <- gold_set |>
   mutate(is_all_authors = str_detect(sentence, keyword_list$all_authors),
          has_credit_role = str_detect(sentence, keyword_list$credit_roles),
          n_credit = str_count(sentence, keyword_list$credit_roles),
+         n3_credit=str_count(sentence, keyword_list$n3_credit_roles),
          has_noncredit_role = str_detect(sentence, keyword_list$non_credit_roles) &!is_all_authors,
          is_equally = str_detect(sentence, keyword_list$equally),
          is_narrative = str_detect(sentence, keyword_list$narrative) & !is_all_authors & !is_equally,
@@ -90,12 +92,22 @@ qa_performance <- gold_set_unnested |>
             has_non_credit = any(has_noncredit_role, na.rm = TRUE),
             is_narrative = any(is_narrative, na.rm = TRUE),
             n_credit = sum(n_credit, na.rm = TRUE),
+            n3_credit=sum(n3_credit,na.rm = TRUE),
             is_responsibility=any(is_responsibility,na.rm = TRUE),
             cleaned_sentences = paste(sentence, collapse = ". "),
             credit_estimate = n_credit > 3 & !has_non_credit,
             contrib_estimate = any(is_contrib, na.rm = TRUE)
   ) |>
-  mutate(credit_estimate = factor(credit_estimate, levels = c(TRUE, FALSE)),
+  #mutate(credit_estimate = factor(credit_estimate, levels = c(TRUE, FALSE)),
+         
+         mutate(
+           credit_estimate = factor(
+             case_when(
+               n_credit > 3 & !has_non_credit ~ TRUE,  
+               n_credit <= 3 & !has_non_credit & n3_credit > 2 ~ TRUE,  
+               TRUE ~ FALSE  
+             ), levels = c(TRUE, FALSE)
+           ),
          credit_truth = factor(as.logical(CRT_Taxonomy, na.rm = TRUE), levels = c(TRUE, FALSE)),
          contrib_estimate = factor(contrib_estimate, levels = c(TRUE, FALSE)),
          contrib_truth = factor(as.logical(Contributions, na.rm = TRUE), levels = c(TRUE, FALSE)),
@@ -103,6 +115,8 @@ qa_performance <- gold_set_unnested |>
          narrative_truth = factor(as.logical(Narrative, na.rm = TRUE), levels = c(TRUE, FALSE)),
          Authorship_estimate = factor(is_responsibility, levels = c(TRUE, FALSE)),
          Authorship_truth = factor(as.logical(Auth_criteria, na.rm = TRUE), levels = c(TRUE, FALSE)))
+
+
 
 multi_metric <- metric_set(accuracy, ppv, sensitivity, specificity, npv, f_meas)
 multi_metric(qa_performance,
@@ -144,8 +158,6 @@ qa_narrative_credit <- gold_set_unnested |>
   mutate(has_noncredit = any(has_noncredit_role == TRUE, na.rm = TRUE)) |>
   filter(has_credit_role, !has_noncredit, !is_all_authors,
          is_narrative, CRT_Taxonomy == 0, n_credit > 3)
-
-
 
 qa_credit <- gold_set_unnested |>
   group_by(doi) |>
