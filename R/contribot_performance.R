@@ -51,6 +51,8 @@ library(yardstick)
     stringr::str_replace_all("fnal", "final") |>
     stringr::str_replace_all("frst", "first") |>
     stringr::str_replace_all("fgure", "figure") |>
+    stringr::str_replace_all("drat", "draft") |>
+    stringr::str_replace_all("sotware", "software") |>
     stringr::str_squish()
   return(cleaned_sentences)
 }
@@ -83,6 +85,8 @@ gold_set_unnested <- gold_set |>
          is_narrative = str_detect(sentence, keyword_list$narrative) & !is_all_authors & !is_equally,
          is_responsibility = str_detect(sentence, keyword_list$responsibility),
          is_contrib = (n_credit > 0 | has_noncredit_role | is_narrative) & !is_all_authors & !is_equally)
+
+
 
 
 qa_performance <- gold_set_unnested |>
