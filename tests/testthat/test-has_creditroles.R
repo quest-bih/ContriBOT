@@ -6,9 +6,11 @@ keyword_list <- .create_keyword_list()
 test_that("Edge case tests for 'conception' and 'suggestions' as credit roles", {
 
   # Test 1: "Conception" shouldnt be part of a credit role
-  sentence1 <- " conception zxx, lxc, zxn"
-  has_credit_role1 <- stringr::str_detect(sentence1, keyword_list$credit_roles) 
-  expect_false(has_credit_role1)  # "conception" should match a credit role
+  ### TODO: please use this syntax for other test cases and add more cases,
+  # a couple of each of the classifiers, ideally
+  expect_false(
+    stringr::str_detect(" conception zxx, lxc, zxn", keyword_list$credit_roles)
+  )  # 
 
 
   # Test 2: "Conception" with other roles

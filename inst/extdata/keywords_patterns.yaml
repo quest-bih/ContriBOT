@@ -62,7 +62,7 @@ stop_sections:
 
 credit_roles:
  # - "conceptuali((s|z)ation|sm)|conceived|conceptualized|(study )?conception"
-  - "conceptuali((s|z)ation|sm)|conceived|conceptualized"
+  - "conceptuali((s|z)ation|sm)|conceptualized"
   - "data curation"
   - "(formal( data)?|statistical) analysis"
   - "funding( acquisition)?"
@@ -83,8 +83,8 @@ credit_roles:
 n3_credit_roles:
   - "conceptuali((s|z)ation|sm)|conceived|conceptualized"
   - "investigations?|investigated"
-  - "writing[^\\w]+original[^\\w]+draft[^\\w]+(preparation)?|(original|first) draft|drafting|drafted"
-  - "writing[^\\w]+review[^\\w]+(and|&)?[^\\w]+editing|reviewed|reviewing|revisions|manuscript review"
+  - "writing[^\\w]+original[^\\w]+draft[^\\w]+(preparation)?|(original|first) draft"
+  - "writing[^\\w]+review[^\\w]+(and|&)?[^\\w]+editing"
   - "methodology"
 
 
@@ -98,8 +98,9 @@ all_authors:
   
 
 equally:
-  - "contributed equally\\.?$"
-  - "contributed equally to this"
+  #- "contributed equally\\.?$"
+   - "contributed equally[\\.,]?$"
+   - "contributed equally to this"
 
 responsibility:
   - "accountab(le|ility)"
@@ -114,6 +115,7 @@ responsibility:
   - "revising it critically"
   - "(final|accept|takes) responsibility"
  # - "(had|has) full access.*?(accept(s)?|take(s|n)?) responsibility" 
+ 
 narrative:
   - "acted"
   - "acquired"
@@ -194,7 +196,6 @@ non_credit_roles:
   - "derive"
   - "descri(pt|be)"
   - "discussion"
-  - "study( design)"
   - "dissertation"
   - "document"
   - "ethic(al|s)"
@@ -239,6 +240,8 @@ non_credit_roles:
   - "screening"
   - "simulation"
   - "stakeholder"
+  - "study( design)"
+  - "design"
   - "submit"
   - "suggestions"
   - "surg(ery|ic)"
