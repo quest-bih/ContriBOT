@@ -1,24 +1,32 @@
-# Test: Edge case tests for 'conception' and 'design' as credit roles
+# Test: Edge case tests for credit roles such as 'conception' and 'conceived' 
 library(testthat)
 
 keyword_list <- .create_keyword_list()
 
-test_that("Edge case tests for 'conception' and 'suggestions' as credit roles", {
-
-  # Test 1: "Conception" shouldnt be part of a credit role
-  ### TODO: please use this syntax for other test cases and add more cases,
-  # a couple of each of the classifiers, ideally
-  expect_false(
-    stringr::str_detect(" conception zxx, lxc, zxn", keyword_list$credit_roles))  # "conception" should match a credit role
-
-
-  # Test 2: "Conception" with other roles
-  sentence2 <- "ag, hm, jf, jg, em. sbe, sbr made substantial contributions to the conception and methodology"
-  has_credit_role2 <- stringr::str_detect(sentence2, keyword_list$credit_roles)  
-  expect_true(has_credit_role2)
+test_that("Edge case tests for 'conception' and 'conceived' as credit roles", {
   
-  # Test 3: "Suggestions"
-  sentence3 <- "cc and hc helped with suggestions."
-  has_credit_role3 <- stringr::str_detect(sentence3, keyword_list$credit_roles)  
-  expect_false(has_credit_role3)
+  # Test 1: "Conception" should not be matched alone
+  expect_false(
+    stringr::str_detect("conception zxx, lxc, zxn", keyword_list$credit_roles)
+  )
+  
+  # Test 2: "Conception" in a valid credit role 
+  expect_true(
+    stringr::str_detect("ag, hm, jf, jg, em. sbe, sbr made substantial contributions to the conception and methodology", keyword_list$credit_roles)
+  )
+  
+    # Test 3: "conceived"
+  expect_false(
+    stringr::str_detect("mr conceived the study and took the ,main responsibility ", keyword_list$credit_roles)
+  )
+  
+  expect_true(
+    stringr::str_detect("Krishane Patel: conceptualization, writing original draft preparation, writing review & editing.", keyword_list$credit_roles)
+  )
+  
+  # Test 5: Suggestion
+  expect_false(
+    stringr::str_detect("cc and hc helped with suggestions.", keyword_list$credit_roles)
+  )
+  
 })

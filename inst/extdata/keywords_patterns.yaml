@@ -98,8 +98,8 @@ all_authors:
   
 
 equally:
-  #- "contributed equally\\.?$"
-   - "contributed equally[\\.,]?$"
+   - "contributed equally\\.?$"
+   # - "contributed equally[\\.,]?$"
    - "contributed equally to this"
 
 responsibility:
