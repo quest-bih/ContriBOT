@@ -15,7 +15,7 @@ test_that("Edge case tests for 'conception' and 'suggestions' as credit roles", 
   expect_true(has_credit_role2)
 
   # Test 3: "Suggestions"
-  sentence3 <- "cc and hc helped with suggestions."
-  has_credit_role3 <- str_detect(sentence3, keyword_list$credit_roles)  # Direct use of str_detect
-  expect_false(has_credit_role3)
+  sentence3 <- "conceptualization: sg. methodology: sg, ark, sd, ak. data collection: sg, ark, ak. formal analysis and investigation: sg, ark, sd, ak, rsa, aa, mm, ha. writing: sg. writing—review and editing: all authors read and approved the final manuscript. "
+  has_noncredit_role3 <- str_detect(sentence3, keyword_list$non_credit_roles)
+  expect_true(has_noncredit_role3)
 })
