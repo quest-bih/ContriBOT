@@ -42,7 +42,7 @@ stop_sections:
   - "additional information:"
   - "a ?c ?k ?n ?o ?w ?l ?e ?d ?g ?e? ?m ?e ?n ?t ?s?"
   - "orcid"
-  - "<section>(\\) sources of)? funding"
+  - "(<section>|#+)(\\) sources of)? funding"
   - "disclosures?"
   - "peer"
   - "ethic"
@@ -53,9 +53,9 @@ stop_sections:
   - "accepted \\d{1,2}"
   - "\\u00a9"
   - "citation:"
-  - "<section> open data" # TODO: remove upon section detection update
+  - "(<section>|#+) open data" # TODO: remove upon section detection update
   - "supplement"
-  - "et al\\."
+  - "et al\\.?"
   - "abbreviations"
   - "twitter"
   - "receive"
@@ -93,9 +93,6 @@ all_authors:
  # - "(all|the)( the)? author[^\\w]?s[^\\w]?"
  # - "(all|the|both)(\\s+\\d+)?( the)? author[^\\w]?s[^\\w]?"
   - "^(all|the|both)(\\s+\\d+)?( the)? author[^\\w]?s[^\\w]?"
-
-
-
   - "(all|the) authors(have )? (read|revise|review|approve|critically)"
   - "had full access"
   

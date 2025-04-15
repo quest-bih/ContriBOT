@@ -82,6 +82,7 @@ gold_set_unnested <- gold_set |>
          n3_credit=str_count(sentence, keyword_list$n3_credit_roles),
          has_noncredit_role = str_detect(sentence, keyword_list$non_credit_roles) &!is_all_authors,
          is_equally = str_detect(sentence, keyword_list$equally),
+         has_narrative=str_detect(sentence,keyword_list$narrative),
          is_narrative = str_detect(sentence, keyword_list$narrative) & !is_all_authors & !is_equally,
          is_responsibility = str_detect(sentence, keyword_list$responsibility),
          is_contrib = (n_credit > 0 | has_noncredit_role | is_narrative) & !is_all_authors & !is_equally)
