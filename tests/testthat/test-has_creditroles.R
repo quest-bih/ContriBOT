@@ -9,8 +9,7 @@ test_that("Edge case tests for 'conception' and 'suggestions' as credit roles", 
   ### TODO: please use this syntax for other test cases and add more cases,
   # a couple of each of the classifiers, ideally
   expect_false(
-    stringr::str_detect(" conception zxx, lxc, zxn", keyword_list$credit_roles)
-  )  # 
+    stringr::str_detect(" conception zxx, lxc, zxn", keyword_list$credit_roles))  # "conception" should match a credit role
 
 
   # Test 2: "Conception" with other roles
