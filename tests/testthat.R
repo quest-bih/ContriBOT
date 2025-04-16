@@ -7,6 +7,5 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(ContriBOT)
 
 test_check("ContriBOT")

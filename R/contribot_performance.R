@@ -22,6 +22,7 @@ library(yardstick)
                                                     "equally" = .format_keyword_vector(x),
                                                     "n3_credit_roles"=.format_keyword_vector(x),
                                                     
+                                                    
                                                     .format_keyword_vector(x, end_boundary = TRUE)
     ))
   
@@ -64,7 +65,7 @@ unnest_statements <- function(input_tib, input_col) {
     tidytext::unnest_tokens(output = sentence, input = {{ input_col }},
                             token = "regex", pattern = "(?<!\\b[A-Za-z]?\\w)\\. ") |>
     tidytext::unnest_tokens(output = sentence, input = sentence, token = "regex",
-                            pattern = "(\\.|;|:) (?=all)")
+                            pattern = "(\\.|;|:|,) (?=all)")
   
   return(unnested_tib)
 }

@@ -90,13 +90,12 @@ n3_credit_roles:
 
 
 all_authors:
- # - "(all|the)( the)? author[^\\w]?s[^\\w]?"
+  #- "(all|the)( the)? author[^\\w]?s[^\\w]?"
  # - "(all|the|both)(\\s+\\d+)?( the)? author[^\\w]?s[^\\w]?"
   - "^(all|the|both)(\\s+\\d+)?( the)? author[^\\w]?s[^\\w]?"
   - "(all|the) authors(have )? (read|revise|review|approve|critically)"
   - "had full access"
   
-
 equally:
    - "contributed equally\\.?$"
    # - "contributed equally[\\.,]?$"
@@ -104,10 +103,11 @@ equally:
 
 responsibility:
   - "accountab(le|ility)"
-  - "authorship( eligibility)?"
+  - "(?<!credit )authorship( eligibility)?"
   - "responsible for (reading|integrity)( and approving)?"
   - "agree to"
   - "(substantial|direct|intellectual) contribution"
+  - "(contributed|contributions).*(edited|(critical(ly)? revised|review?)).*approved"
   - "(met criteria|meet the \\w+ criteria)"
   - "undertake to declare"
   - "guarantors?"
@@ -178,6 +178,7 @@ non_credit_roles:
   - "application"
   - "article"
   - "assess"
+  - "access"
   - "behavior"
   - "blot"
   - "bio(marker|info)"
@@ -185,6 +186,7 @@ non_credit_roles:
   - "clinic"
   - "cell"
   - "chemical"
+  - "coding"
   - "count"
   - "collect"
   - "conclusion"
@@ -195,6 +197,7 @@ non_credit_roles:
   - "database"
   - "derive"
   - "descri(pt|be)"
+  - "(?<!\\()design"
   - "discussion"
   - "dissertation"
   - "document"
@@ -241,7 +244,6 @@ non_credit_roles:
   - "simulation"
   - "stakeholder"
   - "study( design)"
-  - "design"
   - "submit"
   - "suggestions"
   - "surg(ery|ic)"

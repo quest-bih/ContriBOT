@@ -1,5 +1,4 @@
 # Test: Edge case tests for Credit Authorship
-library(testthat)
 
 keyword_list <- .create_keyword_list()
 
