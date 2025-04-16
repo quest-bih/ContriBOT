@@ -8,6 +8,7 @@ test_that("Edge case tests for IS_CRT", {
   expect_false(
     stringr::str_count("Conceptualization, N.B.V.; investigation, A.I.L.", keyword_list$credit_roles) <= 3 &
       stringr::str_count("Conceptualization, N.B.V.; investigation, A.I.L.", keyword_list$n3_credit_roles) > 2
+    
   )
   
   # Test 2: Check that credit_roles <= 3 AND n3_credit_roles > 2
@@ -20,9 +21,9 @@ test_that("Edge case tests for IS_CRT", {
   
   # Test 3: strict with n3_credit roles
   expect_false(
-    stringr::str_count("conceptualization, jtr, tdw, aa, sc, mlts, osc, yc; investigation, tdw, jtr., ss, sc, mlts, aa, jjb, jll, bn, smg, osc; data analysis, jtr, tdw, sc, mlts, aa, jjb, jll, bn, osc, yc; writing, jtr, tdw, sc, mlt, jll, yc; funding acquisition, yc, ss, osc.",
+    stringr::str_count("conceptualization,  investigation,  data analysis, ; writing,  funding acquisition,",
                        keyword_list$credit_roles) <= 3 &
-      stringr::str_count("conceptualization, jtr, tdw, aa, sc, mlts, osc, yc; investigation, tdw, jtr., ss, sc, mlts, aa, jjb, jll, bn, smg, osc; data analysis, jtr, tdw, sc, mlts, aa, jjb, jll, bn, osc, yc; writing, jtr, tdw, sc, mlt, jll, yc; funding acquisition, yc, ss, osc.",
+      stringr::str_count("conceptualization,  investigation,  data analysis, ; writing,  funding acquisition",
                          keyword_list$n3_credit_roles) > 2
   )
   

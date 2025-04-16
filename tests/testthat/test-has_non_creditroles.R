@@ -23,5 +23,12 @@ test_that("Edge case tests for non credit roles", {
     stringr::str_detect(
       "br, mm, ba, md, cl, and tr contributed to study design", keyword_list$non_credit_roles))
   
+  # Test 1: "Design" in brackets as non non credit roles
+  expect_false(
+    stringr::str_detect(
+      "j.a., o.g., a.t., e.a.c.b., and m.m.v.; (design of software),", keyword_list$non_credit_roles)
+  )
+  
+  
 })
 

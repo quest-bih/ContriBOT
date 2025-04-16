@@ -81,8 +81,8 @@ credit_roles:
   # - "original\\s*[^.,;:]*"
   
 n3_credit_roles:
-  - "conceptuali((s|z)ation|sm)|conceived|conceptualized"
-  - "investigations?|investigated"
+  - "conceptuali((s|z)ation|sm)"
+  - "investigations?"
   - "writing[^\\w]+original[^\\w]+draft[^\\w]+(preparation)?|(original|first) draft"
   - "writing[^\\w]+review[^\\w]+(and|&)?[^\\w]+editing"
   - "methodology"
@@ -176,7 +176,7 @@ non_credit_roles:
   - "allocation"
   - "animal"
   - "application"
-  - "article"
+  #- "article"
   - "assess"
   - "access"
   - "behavior"
