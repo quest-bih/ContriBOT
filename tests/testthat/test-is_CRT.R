@@ -1,5 +1,3 @@
-library(testthat)
-
 keyword_list <- .create_keyword_list()
 
 test_that("Edge case tests for IS_CRT", {

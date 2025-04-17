@@ -1,6 +1,4 @@
 # Test: Edge case tests for credit roles such as 'conception' and 'conceived' 
-library(testthat)
-
 keyword_list <- .create_keyword_list()
 
 test_that("Edge case tests for 'conception' and 'conceived' as credit roles", {

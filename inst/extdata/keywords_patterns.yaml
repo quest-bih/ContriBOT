@@ -92,12 +92,15 @@ n3_credit_roles:
 all_authors:
   #- "(all|the)( the)? author[^\\w]?s[^\\w]?"
  # - "(all|the|both)(\\s+\\d+)?( the)? author[^\\w]?s[^\\w]?"
-  - "^(all|the|both)(\\s+\\d+)?( the)? author[^\\w]?s[^\\w]?"
+  #- "^(all|the|both)(\\s+\\d+)?( the!listed)? author[^\\w]?s[^\\w]?"
+  - "^(all|the|both)(\\s+\\d+)?( the| listed)? authors?"
   - "(all|the) authors(have )? (read|revise|review|approve|critically)"
-  - "had full access"
+  #- "had full access"
+  #- "accountability"
+  
   
 equally:
-   - "contributed equally\\.?$"
+   - "contributed equally\\.?"
    # - "contributed equally[\\.,]?$"
    - "contributed equally to this"
 
