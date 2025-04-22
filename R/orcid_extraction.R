@@ -2,7 +2,7 @@
 #'
 #' The algorithm searchers for an ORCID and extracts what it finds.
 #'
-#' @param PDF_file String with the path to the PDF to be screened.
+#' @param pdf_file String with the path to the PDF to be screened.
 #'
 #' @return String with the ORCIDs
 #'
@@ -12,9 +12,8 @@
 #' }
 #'
 #' @export
-
-extract_orcid_hyperlink <- function(PDF_file) {
-  orcids <- readr::read_file_raw(PDF_file) |>
+extract_orcid_hyperlink <- function(pdf_file) {
+  orcids <- readr::read_file_raw(pdf_file) |>
     furrr::future_map_chr(rawToChar) |>
     paste(collapse = "") |>
     stringr::str_extract_all(stringr::regex("(https?\\://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\w{4})|(https?.*orcid.*(\\d|X))",
@@ -55,8 +54,8 @@ extract_orcid_hyperlink <- function(PDF_file) {
 #' @export
 extract_orcids_from_folder <- function(pdf_folder) {
   
-  PDF_files <- list.files(pdf_folder, full.names = TRUE)
+  pdf_files <- list.files(pdf_folder, full.names = TRUE)
   
-  furrr::future_map_chr(PDF_files, extract_orcid_hyperlink,
+  furrr::future_map_chr(pdf_files, extract_orcid_hyperlink,
                         .progress =  TRUE)
 }

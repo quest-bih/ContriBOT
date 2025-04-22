@@ -4,10 +4,10 @@
 \alias{extract_orcid_hyperlink}
 \title{Seach for ORCID hyperlinks and extract ORCIDs.}
 \usage{
-extract_orcid_hyperlink(PDF_file)
+extract_orcid_hyperlink(pdf_file)
 }
 \arguments{
-\item{PDF_file}{String with the path to the PDF to be screened.}
+\item{pdf_file}{String with the path to the PDF to be screened.}
 }
 \value{
 String with the ORCIDs
