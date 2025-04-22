@@ -5,7 +5,8 @@
 #' for several categories of similar keywords in each sentence of the whole manuscript.
 #'
 #' @param pdf_text_sentences Document corpus loaded with the pdf_load function.
-#'
+#' @importFrom rlang .data
+#' 
 #' @return Tibble with one row per screened document and the file name and logical values for authorship,
 #' acknowledgement, and orcid statements detected as columns,
 #' plus additional columns that contain the statements that were extracted.
@@ -53,9 +54,9 @@ extract_contributions <- function(pdf_text_sentences)
     .enframe_results(name = "article", value = "contrib_statement") |>
     dplyr::left_join(ackn_results, by = "article") |>
     dplyr::left_join(orcid_results, by = "article") |>
-    dplyr::mutate(has_contrib = contrib_statement != "",
-                  has_ackn = ackn_statement != "",
-                  has_orcid = orcid_statement != "")
+    dplyr::mutate(has_contrib = .data$contrib_statement != "",
+                  has_ackn = .data$ackn_statement != "",
+                  has_orcid = .data$orcid_statement != "")
 
 }
 
@@ -70,6 +71,7 @@ extract_contributions <- function(pdf_text_sentences)
 # tib <- tibble(text = pdf_text_sentences)
 # section_regexes <- credit_section_list
 # section_regexes <- orcid_section_list
+
 #' extract section
 #' @noRd
 .extract_section <- function(pdf_text_sentences, section_regexes, look_in_tables = FALSE) {
@@ -82,8 +84,11 @@ extract_contributions <- function(pdf_text_sentences)
     section_string <- paste0(section_string, "|", keyword_list$table_credit) 
   }
   # stringr::str_detect(PDF_text_sentence, data_availability)
-  section_detections <- furrr::future_map_lgl(pdf_text_sentences,
-                                          \(sentence) stringr::str_detect(sentence, stringr::regex(section_string, ignore_case = TRUE)))
+  section_detections <- 
+    furrr::future_map_lgl(pdf_text_sentences,
+                          \(sentence) stringr::str_detect(
+                            sentence,
+                            stringr::regex(section_string, ignore_case = TRUE)))
 # str_detect("<section> contributors all authors were involved in the discussion and formulation of the points to consider.", section_string)
   # if (sum(section_detections) > 0) {
   #   DAS_detections <- furrr::future_map_lgl(pdf_text_sentences,
@@ -112,7 +117,8 @@ extract_contributions <- function(pdf_text_sentences)
 
   stop_regex <- keyword_list$stop_sections
   
-  stop_regex <- stop_regex[!stringr::str_detect(stop_regex, section_regexes)] |>
+  stop_regex <- stop_regex[!stringr::str_detect(stop_regex,
+                                                section_regexes)] |>
     paste(collapse = "|")
 
   # candidates are sentences after the first section but before the next
@@ -121,14 +127,22 @@ extract_contributions <- function(pdf_text_sentences)
 
   if (is_plos == TRUE) {
 
-    section_end <- furrr::future_map_lgl(pdf_text_sentences[(section_start + 1):length(pdf_text_sentences)],
-                                         \(sentence) stringr::str_detect(sentence, stringr::regex("section> references", ignore_case = TRUE))) |>
+    section_end <- 
+      furrr::future_map_lgl(
+        pdf_text_sentences[(section_start + 1):length(pdf_text_sentences)],
+        \(sentence) stringr::str_detect(sentence,
+                                        stringr::regex("section> references",
+                                                       ignore_case = TRUE))) |>
       which() - 1
 
   } else {
 
-      section_end_candidates <- furrr::future_map_lgl(pdf_text_sentences[(section_start + 1):length(pdf_text_sentences)],
-                                           \(sentence) stringr::str_detect(sentence, stringr::regex(stop_regex, ignore_case = TRUE))) |>
+      section_end_candidates <-
+        furrr::future_map_lgl(
+          pdf_text_sentences[(section_start + 1):length(pdf_text_sentences)],
+          \(sentence) stringr::str_detect(sentence,
+                                          stringr::regex(stop_regex,
+                                                         ignore_case = TRUE))) |>
         which() - 1
 
       section_end <- section_end_candidates[1]
@@ -140,16 +154,13 @@ extract_contributions <- function(pdf_text_sentences)
 
   section <- pdf_text_sentences[section_start:section_end]
 
-  if (section_start < 50 & any(stringr::str_detect(pdf_text_sentences[1:10], stringr::regex("plos", ignore_case = TRUE)))) {
-    section <- .splice_plos_twopager(section)
+  if (section_start < 50 & any(stringr::str_detect(pdf_text_sentences[1:10],
+                                                   stringr::regex("plos",
+                                                                  ignore_case = TRUE)))) {
+    section <- oddpub::splice_plos_twopager(section)
   }
   section |>
     stringr::str_remove_all("\\u200b") |> # remove zerowidth spaces
     stringr::str_trim()
 
 }
-
-
-
-
-

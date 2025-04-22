@@ -7,7 +7,8 @@
 #' tibble, usually `doi` or `file_name`.
 #' @param statement_col Unquoted expression with the name of the column that
 #' contains the authorship statements to be classified.
-#'
+#' @importFrom rlang .data
+#' 
 #' @return Tibble with one row per screened document and logical values for
 #'  credit_estimate (whether or not the statement follows CREdiT),
 #'  contrib_estimate (whether or not author roles are listed at all),
@@ -30,58 +31,60 @@ classify_contributions <- function(tib, key_col, statement_col) {
   
   tib_unnested <- tib |>
     dplyr::mutate(cleaned_statement = .clean_sentences({{ statement_col }})) |>
-    unnest_statements(cleaned_statement) |>
+    unnest_statements(.data$cleaned_statement) |>
     dplyr::mutate(is_all_authors =
-                    stringr::str_detect(sentence, keyword_list$all_authors),
+                    stringr::str_detect(.data$sentence, keyword_list$all_authors),
            has_credit_role =
-             stringr::str_detect(sentence, keyword_list$credit_roles),
+             stringr::str_detect(.data$sentence, keyword_list$credit_roles),
            n_credit =
-             stringr::str_count(sentence, keyword_list$credit_roles),
+             stringr::str_count(.data$sentence, keyword_list$credit_roles),
            n3_credit =
-             stringr::str_count(sentence, keyword_list$n3_credit_roles),
+             stringr::str_count(.data$sentence, keyword_list$n3_credit_roles),
            has_noncredit_role =
-             stringr::str_detect(sentence, keyword_list$non_credit_roles) &
-             !is_all_authors,
+             stringr::str_detect(.data$sentence, keyword_list$non_credit_roles) &
+             !.data$is_all_authors,
            is_equally =
-             stringr::str_detect(sentence, keyword_list$equally),
+             stringr::str_detect(.data$sentence, keyword_list$equally),
            is_narrative =
-             stringr::str_detect(sentence, keyword_list$narrative) &
-             !is_all_authors & !is_equally,
+             stringr::str_detect(.data$sentence, keyword_list$narrative) &
+             !.data$is_all_authors & !.data$is_equally,
            is_responsibility =
-             stringr::str_detect(sentence, keyword_list$responsibility),
-           is_contrib = (n_credit > 0 | has_noncredit_role | is_narrative) &
-             !is_all_authors & !is_equally)
+             stringr::str_detect(.data$sentence, keyword_list$responsibility),
+           is_contrib = (.data$n_credit > 0 |
+                           .data$has_noncredit_role |
+                           .data$is_narrative) &
+             !.data$is_all_authors & !.data$is_equally)
 
   tib_classified <- tib_unnested |>
     dplyr::group_by({{ key_col }}) |>
     dplyr::summarise(dplyr::across(dplyr::all_of(cols_no_key), dplyr::first),
-              has_credit = any(has_credit_role, na.rm = TRUE),
-              has_non_credit = any(has_noncredit_role, na.rm = TRUE),
-              is_narrative = any(is_narrative, na.rm = TRUE),
-              n_credit = sum(n_credit, na.rm = TRUE),
-              n3_credit = sum(n3_credit,na.rm = TRUE),
-              is_responsibility = any(is_responsibility,na.rm = TRUE),
-              cleaned_sentences = paste(sentence, collapse = ". "),
-              credit_estimate = n_credit > 3 & !has_non_credit,
-              contrib_estimate = any(is_contrib, na.rm = TRUE)
+              has_credit = any(.data$has_credit_role, na.rm = TRUE),
+              has_non_credit = any(.data$has_noncredit_role, na.rm = TRUE),
+              is_narrative = any(.data$is_narrative, na.rm = TRUE),
+              n_credit = sum(.data$n_credit, na.rm = TRUE),
+              n3_credit = sum(.data$n3_credit,na.rm = TRUE),
+              is_responsibility = any(.data$is_responsibility,na.rm = TRUE),
+              cleaned_sentences = paste(.data$sentence, collapse = ". "),
+              credit_estimate = .data$n_credit > 3 & !.data$has_non_credit,
+              contrib_estimate = any(.data$is_contrib, na.rm = TRUE)
     ) |>
     dplyr::mutate(
       credit_estimate = factor(
         dplyr::case_when(
-          n_credit > 3 & !has_non_credit ~ TRUE,
-          n_credit <= 3 & !has_non_credit & n3_credit > 2 ~ TRUE,
+          .data$n_credit > 3 & !.data$has_non_credit ~ TRUE,
+          .data$n_credit <= 3 & !.data$has_non_credit & .data$n3_credit > 2 ~ TRUE,
           .default = FALSE
         ), levels = c(TRUE, FALSE)
       ),
       # credit_truth = factor(as.logical(CRT_Taxonomy, na.rm = TRUE),
       #                       levels = c(TRUE, FALSE)),
-      contrib_estimate = factor(contrib_estimate, levels = c(TRUE, FALSE)),
+      contrib_estimate = factor(.data$contrib_estimate, levels = c(TRUE, FALSE)),
       # contrib_truth = factor(as.logical(Contributions, na.rm = TRUE),
       #                        levels = c(TRUE, FALSE)),
-      narrative_estimate = factor(is_narrative, levels = c(TRUE, FALSE)),
+      narrative_estimate = factor(.data$is_narrative, levels = c(TRUE, FALSE)),
       # narrative_truth = factor(as.logical(Narrative, na.rm = TRUE),
       #                          levels = c(TRUE, FALSE)),
-      authorship_estimate = factor(is_responsibility,
+      authorship_estimate = factor(.data$is_responsibility,
                                    levels = c(TRUE, FALSE))
       # Authorship_truth = factor(as.logical(Auth_criteria, na.rm = TRUE),
       #                           levels = c(TRUE, FALSE))

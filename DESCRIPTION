@@ -15,6 +15,19 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Imports: 
+    dplyr,
+    furrr,
+    oddpub,
+    purrr,
+    rlang,
+    stringi,
+    stringr,
+    tibble,
+    tidytext,
+    yaml
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    here,
+    readr
 Config/testthat/edition: 3

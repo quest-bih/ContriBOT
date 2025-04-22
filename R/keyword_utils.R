@@ -10,14 +10,12 @@
   
   # add conditional formatting for some dictionaries
   keyword_list <- keyword_list |>
-    purrr::map2(names(keyword_list), \(x, y) switch(y,
-                                                    "credit_roles" = .format_keyword_vector(x, end_boundary = TRUE),
-                                                    # "non_credit_roles" = .format_keyword_vector(x),
-                                                    # "equally" = .format_keyword_vector(x),
-                                                    # "n3_credit_roles" = .format_keyword_vector(x),
-                                                    # "ackn_section" = .format_keyword_vector(x),
-                                                    "stop_sections" = x,
-                                                    .format_keyword_vector(x)
+    purrr::map2(
+      names(keyword_list),
+      \(x, y) switch(y,
+                     "credit_roles" = .format_keyword_vector(x, end_boundary = TRUE),
+                     "stop_sections" = x,
+                     .format_keyword_vector(x)
     ))
   
   return(keyword_list)
@@ -53,12 +51,17 @@
 }
 
 #' unnest sentences in tibble
+#' @importFrom rlang .data
 #' @noRd
 unnest_statements <- function(input_tib, input_col) {
   unnested_tib <- input_tib |>
-    tidytext::unnest_tokens(output = sentence, input = {{ input_col }},
-                            token = "regex", pattern = "(?<!\\b[A-Za-z]?\\w)\\. ") |>
-    tidytext::unnest_tokens(output = sentence, input = sentence, token = "regex",
+    tidytext::unnest_tokens(output = .data$sentence,
+                            input = {{ input_col }},
+                            token = "regex",
+                            pattern = "(?<!\\b[A-Za-z]?\\w)\\. ") |>
+    tidytext::unnest_tokens(output = .data$sentence,
+                            input = .data$sentence,
+                            token = "regex",
                             pattern = "(\\.|;|:) (?=all)")
   
   return(unnested_tib)
