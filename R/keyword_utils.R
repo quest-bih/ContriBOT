@@ -4,8 +4,8 @@
 .create_keyword_list <- function()
 {
   # read regular expression dictionaries from yaml file
-  # yaml_path <- system.file("extdata", "keywords_patterns.yaml", package = "ContriBOT")
-  yaml_path <- here::here("inst", "extdata", "keywords_patterns.yaml")
+  yaml_path <- system.file("extdata", "keywords_patterns.yaml", package = "ContriBOT")
+  # yaml_path <- here::here("inst", "extdata", "keywords_patterns.yaml")
   keyword_list <- yaml::read_yaml(file.path(yaml_path))
   
   # add conditional formatting for some dictionaries
@@ -42,7 +42,7 @@
 #' @noRd
 .clean_sentences <- function(input_str) {
   cleaned_sentences <- stringr::str_replace_all(input_str, "\r\n", " ") |>
-    stringr::str_remove_all(" (-|‐)|\\u25a1|\\u200b|(?<=\\w)(-|‐)( |\n)") |>
+    stringr::str_remove_all(" (-|\\u2010)|\\u25a1|\\u200b|(?<=\\w)(-|\\u2010)( |\n)") |>
     stringr::str_replace_all("fnal", "final") |>
     stringr::str_replace_all("frst", "first") |>
     stringr::str_replace_all("fgure", "figure") |>
