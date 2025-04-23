@@ -89,7 +89,7 @@ classify_contributions <- function(tib, key_col, statement_col) {
       # Authorship_truth = factor(as.logical(Auth_criteria, na.rm = TRUE),
       #                           levels = c(TRUE, FALSE))
       ) |> 
-    dplyr::select(all_of(c(rlang::as_name(rlang::enquo(key_col)), cols_no_key)),
+    dplyr::select(dplyr::all_of(c(rlang::as_name(rlang::enquo(key_col)), cols_no_key)),
                   dplyr::contains("estimate"))
   
   return(tib_classified)

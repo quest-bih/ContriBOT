@@ -19,6 +19,7 @@ Imports:
     dplyr,
     furrr,
     oddpub,
+    progressr,
     purrr,
     rlang,
     stringi,

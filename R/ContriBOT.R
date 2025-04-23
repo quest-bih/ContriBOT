@@ -26,23 +26,22 @@ extract_contributions <- function(pdf_text_sentences)
   # pdf_text_sentences <- list(pdf_text_sentences)
   # tib <- tibble(text = pdf_text_sentences[[1]])
   print("Extracting Contributions...")
-  contrib_text_sentences <- pdf_text_sentences |>
-    furrr::future_map(\(x) .extract_section(x,
-                                            keyword_list$autorship_section,
-                                            look_in_tables = TRUE),
-                      .progress = TRUE)
-
+  contrib_text_sentences <- pdf_text_sentences |> 
+    .extract_section_progress(
+      keyword_list$autorship_section,
+      look_in_tables = TRUE)
+  
   print("Extracting Acknowledgements...")
   ackn_text_sentences <- pdf_text_sentences |>
-    furrr::future_map(\(x) .extract_section(x,
-                                            keyword_list$ackn_section),
-                      .progress = TRUE)
+    .extract_section_progress(
+      keyword_list$ackn_section,
+      look_in_tables = TRUE)
 
   print("Extracting ORCIDs...")
   orcid_text_sentences <- pdf_text_sentences |>
-    furrr::future_map(\(x) .extract_section(x,
-                                            keyword_list$orcid_section),
-                      .progress = TRUE)
+    .extract_section_progress(
+      keyword_list$orcid_section,
+      look_in_tables = TRUE)
 
   ackn_results <- ackn_text_sentences |>
     .enframe_results(name = "article", value = "ackn_statement")
@@ -162,5 +161,19 @@ extract_contributions <- function(pdf_text_sentences)
   section |>
     stringr::str_remove_all("\\u200b") |> # remove zerowidth spaces
     stringr::str_trim()
+}
 
+#' extract contribution section with progress bar
+#' @noRd
+.extract_section_progress <- function(pdf_text_sentences,
+                                      keywords,
+                                      look_in_tables) {
+  p <- progressr::progressor(along = pdf_text_sentences)
+  pdf_text_sentences |>
+    furrr::future_map(\(x) {
+      .extract_section(x,
+                       keywords,
+                       look_in_tables = look_in_tables)
+      p(sprintf("x=%g", x))
+      })
 }
