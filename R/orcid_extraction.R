@@ -55,7 +55,9 @@ extract_orcid_hyperlink <- function(pdf_file) {
 extract_orcids_from_folder <- function(pdf_folder) {
   
   pdf_files <- list.files(pdf_folder, full.names = TRUE)
-  
-  furrr::future_map_chr(pdf_files, extract_orcid_hyperlink,
-                        .progress =  TRUE)
+  p <- progressr::progressor(along = pdf_files)
+  furrr::future_map_chr(pdf_files, \(x) {
+    p()
+    extract_orcid_hyperlink(x)
+  })
 }

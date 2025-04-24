@@ -171,9 +171,10 @@ extract_contributions <- function(pdf_text_sentences)
   p <- progressr::progressor(along = pdf_text_sentences)
   pdf_text_sentences |>
     furrr::future_map(\(x) {
+      p()
       .extract_section(x,
                        keywords,
                        look_in_tables = look_in_tables)
-      p(sprintf("x=%g", x))
+      
       })
 }
