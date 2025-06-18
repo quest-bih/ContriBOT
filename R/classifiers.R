@@ -19,7 +19,7 @@
 #' @examples
 #' \dontrun{
 #' extracted_sections <- extract_contributions(oddpub::pdf_load("examples/"))
-#' classify_contributions <- extracted_sections()
+#' contribution_results <- classify_contributions(extracted_sections)
 #' }
 #'
 #' @export
@@ -76,18 +76,10 @@ classify_contributions <- function(tib, key_col, statement_col) {
           .default = FALSE
         ), levels = c(TRUE, FALSE)
       ),
-      # credit_truth = factor(as.logical(CRT_Taxonomy, na.rm = TRUE),
-      #                       levels = c(TRUE, FALSE)),
       contrib_estimate = factor(.data$contrib_estimate, levels = c(TRUE, FALSE)),
-      # contrib_truth = factor(as.logical(Contributions, na.rm = TRUE),
-      #                        levels = c(TRUE, FALSE)),
       narrative_estimate = factor(.data$is_narrative, levels = c(TRUE, FALSE)),
-      # narrative_truth = factor(as.logical(Narrative, na.rm = TRUE),
-      #                          levels = c(TRUE, FALSE)),
       authorship_estimate = factor(.data$is_responsibility,
                                    levels = c(TRUE, FALSE))
-      # Authorship_truth = factor(as.logical(Auth_criteria, na.rm = TRUE),
-      #                           levels = c(TRUE, FALSE))
       ) |> 
     dplyr::select(dplyr::all_of(c(rlang::as_name(rlang::enquo(key_col)), cols_no_key)),
                   dplyr::contains("estimate"))

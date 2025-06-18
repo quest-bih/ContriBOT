@@ -25,19 +25,19 @@ extract_contributions <- function(pdf_text_sentences)
 
   # pdf_text_sentences <- list(pdf_text_sentences)
   # tib <- tibble(text = pdf_text_sentences[[1]])
-  print("Extracting Contributions...")
+  message("Extracting Contributions...")
   contrib_text_sentences <- pdf_text_sentences |> 
     .extract_section_progress(
       keyword_list$autorship_section,
       look_in_tables = TRUE)
   
-  print("Extracting Acknowledgements...")
+  message("Extracting Acknowledgements...")
   ackn_text_sentences <- pdf_text_sentences |>
     .extract_section_progress(
       keyword_list$ackn_section,
       look_in_tables = TRUE)
 
-  print("Extracting ORCIDs...")
+  message("Extracting ORCIDs...")
   orcid_text_sentences <- pdf_text_sentences |>
     .extract_section_progress(
       keyword_list$orcid_section,

@@ -116,7 +116,7 @@ responsibility:
   - "guarantors?"
   - "adhere to the authorship guildlines"
   - "revising it critically"
-  - "(final|accept|takes) responsibility"
+  - "(final|accept|takes?) responsibility"
  # - "(had|has) full access.*?(accept(s)?|take(s|n)?) responsibility" 
  
 narrative:
@@ -133,7 +133,8 @@ narrative:
   - "designed"
   - "drafted"
   - "established"
-  - "had taken"
+  - "had"
+  # - "had taken"
   - "helped"
   - "implemented"
   - "initiated"

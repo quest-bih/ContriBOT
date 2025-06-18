@@ -30,7 +30,7 @@ Classify statements for CRediT, narrative, and authorship criteria.
 \examples{
 \dontrun{
 extracted_sections <- extract_contributions(oddpub::pdf_load("examples/"))
-classify_contributions <- extracted_sections()
+contribution_results <- classify_contributions(extracted_sections)
 }
 
 }
