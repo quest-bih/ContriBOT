@@ -1,4 +1,4 @@
-#' Seach for ORCID hyperlinks and extract ORCIDs.
+#' Search for ORCID hyperlinks and extract ORCIDs.
 #'
 #' The algorithm searchers for an ORCID and extracts what it finds.
 #'
@@ -36,15 +36,14 @@ extract_orcid_hyperlink <- function(pdf_file) {
   }
 }
 
-# tib <- tibble(orcids)
-#' Seach for ORCID hyperlinks and extract ORCIDs from a folder of PDF files.
+#' Search for ORCID hyperlinks and extract ORCIDs from a folder of PDF files.
 #'
 #' The algorithm searchers for an ORCID and extracts what it finds from each file.
 #'
 #' @param pdf_folder String with the path to folder with PDF files to be screened.
 #'
-#' @return Tibble with one row per screened file and the file name and orcids extracted,
-#' as well as a logical value for orcids detected as columns.
+#' @return Tibble with one row per screened file and the file name and ORCIDs extracted,
+#' as well as a logical value for ORCIDs detected as columns.
 #'
 #' @examples
 #' \dontrun{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/orcid_extraction.R
 \name{extract_orcids_from_folder}
 \alias{extract_orcids_from_folder}
-\title{Seach for ORCID hyperlinks and extract ORCIDs from a folder of PDF files.}
+\title{Search for ORCID hyperlinks and extract ORCIDs from a folder of PDF files.}
 \usage{
 extract_orcids_from_folder(pdf_folder)
 }
@@ -10,8 +10,8 @@ extract_orcids_from_folder(pdf_folder)
 \item{pdf_folder}{String with the path to folder with PDF files to be screened.}
 }
 \value{
-Tibble with one row per screened file and the file name and orcids extracted,
-as well as a logical value for orcids detected as columns.
+Tibble with one row per screened file and the file name and ORCIDs extracted,
+as well as a logical value for ORCIDs detected as columns.
 }
 \description{
 The algorithm searchers for an ORCID and extracts what it finds from each file.

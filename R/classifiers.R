@@ -1,6 +1,5 @@
 #' Classify statements for CRediT, narrative, and authorship criteria.
 #'
-#'
 #' @param tib Tibble with extracted contribution statements with the
 #' `extract_contributions` function.
 #' @param key_col Unquoted expression with the name of the key column of the input
@@ -86,6 +85,3 @@ classify_contributions <- function(tib, key_col, statement_col) {
   
   return(tib_classified)
 }
-
-# res <- classify_contributions(tib, doi, Statement_Text)
-

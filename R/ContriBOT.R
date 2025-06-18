@@ -1,10 +1,9 @@
-#' Seach for CRediT keywords and extract section.
+#' Search for Authorship, Acknowledgement, and ORCID keywords and extract corresponding sections.
 #'
 #' The algorithm searchers for a  Authorship, Acknowledgement, and ORCID statements
-#' and extracts them. If no known section title was found, the algorithm searches
-#' for several categories of similar keywords in each sentence of the whole manuscript.
+#' and extracts them.
 #'
-#' @param pdf_text_sentences Document corpus loaded with the pdf_load function.
+#' @param pdf_text_sentences Document corpus loaded with the `oddpub::pdf_load` function.
 #' @importFrom rlang .data
 #' 
 #' @return Tibble with one row per screened document and the file name and logical values for authorship,
@@ -21,10 +20,6 @@ extract_contributions <- function(pdf_text_sentences)
 {
   keyword_list <- .create_keyword_list()
 
-  # pdf_text_sentences <- pdf_text_corpus
-
-  # pdf_text_sentences <- list(pdf_text_sentences)
-  # tib <- tibble(text = pdf_text_sentences[[1]])
   message("Extracting Contributions...")
   contrib_text_sentences <- pdf_text_sentences |> 
     .extract_section_progress(
@@ -56,9 +51,7 @@ extract_contributions <- function(pdf_text_sentences)
     dplyr::mutate(has_contrib = .data$contrib_statement != "",
                   has_ackn = .data$ackn_statement != "",
                   has_orcid = .data$orcid_statement != "")
-
 }
-
 
 #' convert results from list to tibble
 #' @noRd
@@ -67,32 +60,24 @@ extract_contributions <- function(pdf_text_sentences)
     purrr::map_chr(\(x) paste(x, collapse = " ")) |>
     tibble::enframe(name = name, value = value)
 }
-# tib <- tibble(text = pdf_text_sentences)
-# section_regexes <- credit_section_list
-# section_regexes <- orcid_section_list
 
 #' extract section
 #' @noRd
 .extract_section <- function(pdf_text_sentences, section_regexes, look_in_tables = FALSE) {
 
-  # TODO: validate that text extraction stops at the right spots for ackn and credit
+  # TODO: validate that text extraction stops at the right spots, also for ORCID
   keyword_list <- .create_keyword_list()
 
   section_string <- paste0("(<section>|#+)[^\\w+][\\d,^\\w]*(", section_regexes, ")\\b")
   if (look_in_tables == TRUE) {
     section_string <- paste0(section_string, "|", keyword_list$table_credit) 
   }
-  # stringr::str_detect(PDF_text_sentence, data_availability)
+  
   section_detections <- 
     furrr::future_map_lgl(pdf_text_sentences,
                           \(sentence) stringr::str_detect(
                             sentence,
                             stringr::regex(section_string, ignore_case = TRUE)))
-# str_detect("<section> contributors all authors were involved in the discussion and formulation of the points to consider.", section_string)
-  # if (sum(section_detections) > 0) {
-  #   DAS_detections <- furrr::future_map_lgl(pdf_text_sentences,
-  #                                           \(sentence) .has_DAS(sentence, keyword_list))
-  # }
 
   section_start <- which(section_detections)
 
@@ -111,8 +96,6 @@ extract_contributions <- function(pdf_text_sentences)
     stringr::str_trim()
   str_section_sameline <- str_section |>
     stringr::str_remove(stringr::regex(section_string, ignore_case = TRUE))
-
-  # section_regexes
 
   stop_regex <- keyword_list$stop_sections
   

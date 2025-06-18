@@ -2,12 +2,12 @@
 % Please edit documentation in R/ContriBOT.R
 \name{extract_contributions}
 \alias{extract_contributions}
-\title{Seach for CRediT keywords and extract section.}
+\title{Search for Authorship, Acknowledgement, and ORCID keywords and extract corresponding sections.}
 \usage{
 extract_contributions(pdf_text_sentences)
 }
 \arguments{
-\item{pdf_text_sentences}{Document corpus loaded with the pdf_load function.}
+\item{pdf_text_sentences}{Document corpus loaded with the \code{oddpub::pdf_load} function.}
 }
 \value{
 Tibble with one row per screened document and the file name and logical values for authorship,
@@ -16,8 +16,7 @@ plus additional columns that contain the statements that were extracted.
 }
 \description{
 The algorithm searchers for a  Authorship, Acknowledgement, and ORCID statements
-and extracts them. If no known section title was found, the algorithm searches
-for several categories of similar keywords in each sentence of the whole manuscript.
+and extracts them.
 }
 \examples{
 \dontrun{

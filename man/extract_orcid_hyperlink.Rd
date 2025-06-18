@@ -2,7 +2,7 @@
 % Please edit documentation in R/orcid_extraction.R
 \name{extract_orcid_hyperlink}
 \alias{extract_orcid_hyperlink}
-\title{Seach for ORCID hyperlinks and extract ORCIDs.}
+\title{Search for ORCID hyperlinks and extract ORCIDs.}
 \usage{
 extract_orcid_hyperlink(pdf_file)
 }
