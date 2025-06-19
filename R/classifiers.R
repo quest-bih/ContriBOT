@@ -7,7 +7,7 @@
 #' @param statement_col Unquoted expression with the name of the column that
 #' contains the authorship statements to be classified.
 #' @importFrom rlang .data
-#' 
+#'
 #' @return Tibble with one row per screened document and logical values for
 #'  credit_estimate (whether or not the statement follows CREdiT),
 #'  contrib_estimate (whether or not author roles are listed at all),
@@ -23,11 +23,11 @@
 #'
 #' @export
 classify_contributions <- function(tib, key_col, statement_col) {
-  
+
   keyword_list <- .create_keyword_list()
-  
+
   cols_no_key <- setdiff(names(tib), rlang::as_name(rlang::enquo(key_col)))
-  
+
   tib_unnested <- tib |>
     dplyr::mutate(cleaned_statement = .clean_sentences({{ statement_col }})) |>
     unnest_statements(.data$cleaned_statement) |>
@@ -44,11 +44,11 @@ classify_contributions <- function(tib, key_col, statement_col) {
              !.data$is_all_authors,
            is_equally =
              stringr::str_detect(.data$sentence, keyword_list$equally),
-           is_narrative =
-             stringr::str_detect(.data$sentence, keyword_list$narrative) &
-             !.data$is_all_authors & !.data$is_equally,
            is_responsibility =
              stringr::str_detect(.data$sentence, keyword_list$responsibility),
+           is_narrative =
+             stringr::str_detect(.data$sentence, keyword_list$narrative) &
+             !.data$is_all_authors & !.data$is_equally & !.data$is_responsibility,
            is_contrib = (.data$n_credit > 0 |
                            .data$has_noncredit_role |
                            .data$is_narrative) &
@@ -79,9 +79,9 @@ classify_contributions <- function(tib, key_col, statement_col) {
       narrative_estimate = factor(.data$is_narrative, levels = c(TRUE, FALSE)),
       authorship_estimate = factor(.data$is_responsibility,
                                    levels = c(TRUE, FALSE))
-      ) |> 
+      ) |>
     dplyr::select(dplyr::all_of(c(rlang::as_name(rlang::enquo(key_col)), cols_no_key)),
                   dplyr::contains("estimate"))
-  
+
   return(tib_classified)
 }
