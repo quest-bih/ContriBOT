@@ -5,7 +5,7 @@
 #'
 #' @param pdf_text_sentences Document corpus loaded with the `oddpub::pdf_load` function.
 #' @importFrom rlang .data
-#' 
+#'
 #' @return Tibble with one row per screened document and the file name and logical values for authorship,
 #' acknowledgement, and orcid statements detected as columns,
 #' plus additional columns that contain the statements that were extracted.
@@ -21,22 +21,22 @@ extract_contributions <- function(pdf_text_sentences)
   keyword_list <- .create_keyword_list()
 
   message("Extracting Contributions...")
-  contrib_text_sentences <- pdf_text_sentences |> 
+  contrib_text_sentences <- pdf_text_sentences |>
     .extract_section_progress(
       keyword_list$autorship_section,
       look_in_tables = TRUE)
-  
+
   message("Extracting Acknowledgements...")
   ackn_text_sentences <- pdf_text_sentences |>
     .extract_section_progress(
       keyword_list$ackn_section,
-      look_in_tables = TRUE)
+      look_in_tables = FALSE)
 
   message("Extracting ORCIDs...")
   orcid_text_sentences <- pdf_text_sentences |>
     .extract_section_progress(
       keyword_list$orcid_section,
-      look_in_tables = TRUE)
+      look_in_tables = FALSE)
 
   ackn_results <- ackn_text_sentences |>
     .enframe_results(name = "article", value = "ackn_statement")
@@ -70,10 +70,10 @@ extract_contributions <- function(pdf_text_sentences)
 
   section_string <- paste0("(<section>|#+)[^\\w+][\\d,^\\w]*(", section_regexes, ")\\b")
   if (look_in_tables == TRUE) {
-    section_string <- paste0(section_string, "|", keyword_list$table_credit) 
+    section_string <- paste0(section_string, "|", keyword_list$table_credit)
   }
-  
-  section_detections <- 
+
+  section_detections <-
     furrr::future_map_lgl(pdf_text_sentences,
                           \(sentence) stringr::str_detect(
                             sentence,
@@ -98,7 +98,7 @@ extract_contributions <- function(pdf_text_sentences)
     stringr::str_remove(stringr::regex(section_string, ignore_case = TRUE))
 
   stop_regex <- keyword_list$stop_sections
-  
+
   stop_regex <- stop_regex[!stringr::str_detect(stop_regex,
                                                 section_regexes)] |>
     paste(collapse = "|")
@@ -109,7 +109,7 @@ extract_contributions <- function(pdf_text_sentences)
 
   if (is_plos == TRUE) {
 
-    section_end <- 
+    section_end <-
       furrr::future_map_lgl(
         pdf_text_sentences[(section_start + 1):length(pdf_text_sentences)],
         \(sentence) stringr::str_detect(sentence,
@@ -158,6 +158,6 @@ extract_contributions <- function(pdf_text_sentences)
       .extract_section(x,
                        keywords,
                        look_in_tables = look_in_tables)
-      
+
       })
 }
