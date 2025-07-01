@@ -4,10 +4,10 @@
 \alias{extract_contributions}
 \title{Search for Authorship, Acknowledgement, and ORCID keywords and extract corresponding sections.}
 \usage{
-extract_contributions(pdf_text_sentences)
+extract_contributions(text_sentences)
 }
 \arguments{
-\item{pdf_text_sentences}{Document corpus loaded with the \code{oddpub::pdf_load} function.}
+\item{text_sentences}{Document corpus loaded with the \code{oddpub::pdf_load} function.}
 }
 \value{
 Tibble with one row per screened document and the file name and logical values for authorship,
