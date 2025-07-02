@@ -1,6 +1,5 @@
 keywords <- .create_keyword_list()
 
-
 contrib1 <- c("Irrelevant text.",
               "more of that.",
               "<section> Author contributions All authors contributed to the study conception
@@ -36,6 +35,16 @@ contrib2 <- c("not relevant",
               "GH http://orcid.org/0000-0000-0000-000X",
               "<section> REFERENCES"
               )
+
+contrib3 <- c("<section> Author Contributions:",
+              "Conceptualization, A.A.A.; writing—original draft preparation, A.A.A. and D.D.D.;
+              writing—review and editing, A.A.A.; funding acquisition, A.A.A.",
+              "All authors have read and agreed to the published version of the manuscript.",
+              "<section> Funding: This work was supported by Funder XYZ Grant Nr XXXXX.",
+              "<section> Institutional Review Board Statement: Not applicable.",
+              "<section> Informed Consent Statement: Not applicable."
+              )
+
 
 # contrib3 <- c("## consent for publication",
 #           "## not applicable.",
@@ -93,7 +102,6 @@ contrib_plos <- c("<section> Supporting information",
                   "<section> Writing – original draft: Name1.",
                   "<section> Writing – review & editing: Name1, Name2, Name3, Name4, Name5.",
                   "<section> References"
-
 )
 # pdf_text_sentences <- das_plos
 
@@ -119,17 +127,20 @@ contrib_plos <- c("<section> Supporting information",
 
 test_that("contribution_extraction", {
   expect_equal(.extract_section(contrib1,
-                                keywords$autorship_section,
+                                keywords$authorship_section,
                                 look_in_tables = FALSE) |> length(), 4)
   expect_equal(.extract_section(contrib2,
-                                keywords$autorship_section,
+                                keywords$authorship_section,
                                 look_in_tables = FALSE) |> length(), 8)
   expect_equal(.extract_section(contrib_wiley,
-                                keywords$autorship_section,
+                                keywords$authorship_section,
                                 look_in_tables = FALSE) |> length(), 6)
   expect_equal(.extract_section(contrib_plos,
-                                keywords$autorship_section,
+                                keywords$authorship_section,
                                 look_in_tables = FALSE) |> length(), 14)
+  expect_equal(.extract_section(contrib3,
+                                keywords$authorship_section,
+                                look_in_tables = FALSE) |> length(), 3)
 })
 
 
@@ -142,6 +153,5 @@ test_that("orcid_extraction",
             expect_equal(.extract_section(contrib_wiley,
                                           keywords$orcid_section,
                                           look_in_tables = FALSE) |> length(), 3)
-
           })
 
