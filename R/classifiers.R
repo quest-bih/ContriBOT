@@ -42,6 +42,7 @@ classify_contributions <- function(tib, key_col, statement_col) {
            has_noncredit_role =
              stringr::str_detect(.data$sentence, keyword_list$non_credit_roles) &
              !.data$is_all_authors,
+           is_advancement = stringr::str_detect(.data$sentence, keyword_list$advancement),
            is_equally =
              stringr::str_detect(.data$sentence, keyword_list$equally),
            is_responsibility =
@@ -52,7 +53,7 @@ classify_contributions <- function(tib, key_col, statement_col) {
            is_contrib = (.data$n_credit > 0 |
                            .data$has_noncredit_role |
                            .data$is_narrative) &
-             !.data$is_all_authors & !.data$is_equally)
+             !.data$is_all_authors & !.data$is_equally & !.data$is_advancement)
 
   tib_classified <- tib_unnested |>
     dplyr::group_by({{ key_col }}) |>
