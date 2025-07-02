@@ -23,7 +23,7 @@ extract_contributions <- function(text_sentences)
   message("Extracting Contributions...")
   contrib_text_sentences <- text_sentences |>
     .extract_section_progress(
-      keyword_list$autorship_section,
+      keyword_list$authorship_section,
       look_in_tables = TRUE)
 
   message("Extracting Acknowledgements...")
