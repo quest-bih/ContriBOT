@@ -65,24 +65,23 @@ extract_contributions <- function(text_sentences)
 #' @noRd
 .remove_inserts <- function(text_sentences) {
   tibble::tibble(text = text_sentences, mask = 0) |>
-    dplyr::mutate(mask = ifelse(stringr::str_detect(text, "<insert>"), 1, mask)) |>
-    dplyr::mutate(mask = cumsum(mask)) |>
+    dplyr::mutate(mask = ifelse(stringr::str_detect(.data$text, "<insert>"), 1, .data$mask)) |>
+    dplyr::mutate(mask = cumsum(.data$mask)) |>
 
-    dplyr::group_by(mask) |>
-    dplyr::mutate(is_gap = stringr::str_detect(dplyr::lag(text, default = ""), "<iend>") &
-                    !stringr::str_detect(text, "<insert>"),
-                  has_insert = any(stringr::str_detect(text, "<insert>")),
-                  gapsum = cumsum(is_gap)) |>
-    dplyr::mutate(gapsum = ifelse(has_insert == FALSE, 1, gapsum)) |>
-    dplyr::filter(gapsum != 0) |>
-    dplyr::pull(text)
+    dplyr::group_by(.data$mask) |>
+    dplyr::mutate(is_gap = stringr::str_detect(dplyr::lag(.data$text, default = ""), "<iend>") &
+                    !stringr::str_detect(.data$text, "<insert>"),
+                  has_insert = any(stringr::str_detect(.data$text, "<insert>")),
+                  gapsum = cumsum(.data$is_gap)) |>
+    dplyr::mutate(gapsum = ifelse(.data$has_insert == FALSE, 1, .data$gapsum)) |>
+    dplyr::filter(.data$gapsum != 0) |>
+    dplyr::pull(.data$text)
 }
 
 #' extract section
 #' @noRd
 .extract_section <- function(text_sentences, section_regexes, look_in_tables = FALSE) {
 
-  # TODO: validate that text extraction stops at the right spots, also for ORCID
   keyword_list <- .create_keyword_list()
 
   section_string <- paste0("(<section>|#+)[^\\w+][\\d,^\\w]*(", section_regexes, ")\\b")
