@@ -16,7 +16,9 @@ contrib1 <- c("Irrelevant text.",
 
 contrib2 <- c("not relevant",
               "<section> Acknowledgements We gratefully acknowledge the work of someone important.",
-              "<section> Contributors AB and CD contributed equally to the first authorship.",
+              "<section> Contributors All authors meet the National Health and Medical Research Council
+ authorship requirements.",
+              "AB and CD contributed equally to the first authorship.",
               "GH and IK contributed equally to the last authorship. AB, CD and GH initiated
               the collaborative project and designed it.",
               "AB and OP mainly defined inclusion and exclusion criteria.",
@@ -131,7 +133,7 @@ test_that("contribution_extraction", {
                                 look_in_tables = FALSE) |> length(), 4)
   expect_equal(.extract_section(contrib2,
                                 keywords$authorship_section,
-                                look_in_tables = FALSE) |> length(), 8)
+                                look_in_tables = FALSE) |> length(), 9)
   expect_equal(.extract_section(contrib_wiley,
                                 keywords$authorship_section,
                                 look_in_tables = FALSE) |> length(), 6)

@@ -1,6 +1,6 @@
 authorship_section:
   - "Author[^\\w]?s?[^\\w]? ?Contributions? Statement"
-  - "A ?u ?t ?h ?o ?r ?([^\\w]?s?|s? ?[^\\w]?)? ?C ?o ?n ?t ?r ?i ?b ?u ?t ?i ?o ?n ?s?"
+  - "A ?u ?t ?h ?o ?r ?([^\\w]?s?|s? ?[^\\w]?)? ?C ?o ?n ?t ?r ?i ?b ?u ?t ?i ?o ?n ?s?( ?roles)?"
   - "CRediT Authors?hip? Contributions?( Statement)?"
   - "CRediT Author Statement"
   - "Author[^\\w]?s?[^\\w]?s responsibilities"
@@ -10,7 +10,7 @@ authorship_section:
   - "AUTHOR CONTRIBUTORS"
   - "Author statements?"
   - "C ?o ?n ?t ?r ?i ?b ?u ?t ?o ?r ?s" # TODO: check this for 10.1136 $ or no $
-  - "Authorship(?! criter)"
+  - "Authorship(?! (criter|requir))"
   - "Author roles"
   - "Name Location Contribution"
   - "Description of authors[^\\w]? roles"
@@ -60,6 +60,7 @@ stop_sections:
   - "accepted \\d{1,2}"
   - "\\u00a9"
   - "citation:"
+  - "institutional review board"
   - "(<section>|#+) open data" # TODO: remove upon section detection update
   - "supplement"
   - "et al\\.?"
@@ -307,7 +308,7 @@ non_credit_roles:
 advancement:
   - "(this|our) research makes .* contributions"
   - "is the (first|only)"
-  - "original(?! draft)|innovative|novel"
+  - "innovative|novel"
   - "findings"
   - "approach"
   - "our\\b"
