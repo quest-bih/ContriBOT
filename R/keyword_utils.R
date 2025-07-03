@@ -7,7 +7,7 @@
   yaml_path <- system.file("extdata", "keywords_patterns.yaml", package = "ContriBOT")
   # yaml_path <- here::here("inst", "extdata", "keywords_patterns.yaml")
   keyword_list <- yaml::read_yaml(file.path(yaml_path))
-  
+
   # add conditional formatting for some dictionaries
   keyword_list <- keyword_list |>
     purrr::map2(
@@ -17,7 +17,7 @@
                      "stop_sections" = x,
                      .format_keyword_vector(x)
     ))
-  
+
   return(keyword_list)
 }
 
@@ -32,7 +32,7 @@
   }
   # collapse keywords into one string with OR symbol between them and convert to lowercase
   keywords_formatted <- paste(keywords_formatted, collapse = "|") |> tolower()
-  
+
   return(keywords_formatted)
 }
 
@@ -62,7 +62,7 @@ unnest_statements <- function(input_tib, input_col) {
     tidytext::unnest_tokens(output = .data$sentence,
                             input = .data$sentence,
                             token = "regex",
-                            pattern = "(\\.|;|:) (?=all)")
-  
+                            pattern = "(\\.|;|:) (?=(all|the))")
+
   return(unnested_tib)
 }
