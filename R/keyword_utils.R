@@ -15,6 +15,8 @@
       \(x, y) switch(y,
                      "credit_roles" = .format_keyword_vector(x, end_boundary = TRUE),
                      "stop_sections" = x,
+                     "table_credit" = x,
+                     "orcid_link" = x,
                      .format_keyword_vector(x)
     ))
 

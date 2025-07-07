@@ -105,7 +105,25 @@ contrib_plos <- c("<section> Supporting information",
                   "<section> Writing – review & editing: Name1, Name2, Name3, Name4, Name5.",
                   "<section> References"
 )
-# pdf_text_sentences <- das_plos
+
+contrib_table <- c("Irrelevant stuff",
+                       "<insert> Table x of some sort",
+                       "table stuff here",
+                       "<iend>",
+                       "<insert> Appendix Authors Name Location Contribution Author1,
+                       MD Medical University of Atlantis, Atlantis
+                       Acquisition of data, statistical analysis, execution, and interpretation of data
+                       Author2, MSc Medical University of Pluto, Pluto
+                       Acquisition of data, execution, interpretation of data, and critical review for important intellectual content Continued",
+                       "<iend>",
+                       "tons of interpolated text",
+                       "<insert> Appendix (continued) Name Location Contribution Author3, MD University Children’s Hospital Utopia, Utopia
+                       Acquisition of data and critical review for important intellectual content Continued",
+                       "<iend>",
+                       "<insert> Appendix (continued) Name Location Contribution Author4t, MD Olympos Mons, Elada
+                       Conception and design, acquisition of data, execution, interpretation of data, and critical review for important intellectual content")
+# pdf_text_sentences <- das_plosata
+
 
 # das_cell <- c("### b data and code availability",
 #               "## supplemental information",
@@ -131,6 +149,9 @@ test_that("contribution_extraction", {
   expect_equal(.extract_section(contrib1,
                                 keywords$authorship_section,
                                 look_in_tables = FALSE) |> length(), 4)
+  expect_equal(.extract_section(contrib1,
+                                keywords$authorship_section,
+                                look_in_tables = TRUE) |> length(), 4)
   expect_equal(.extract_section(contrib2,
                                 keywords$authorship_section,
                                 look_in_tables = FALSE) |> length(), 9)
@@ -143,6 +164,12 @@ test_that("contribution_extraction", {
   expect_equal(.extract_section(contrib3,
                                 keywords$authorship_section,
                                 look_in_tables = FALSE) |> length(), 3)
+  expect_equal(.extract_section(contrib_table,
+                                keywords$authorship_section,
+                                look_in_tables = TRUE) |> length(), 3)
+  expect_equal(.extract_section(contrib_table,
+                                keywords$authorship_section,
+                                look_in_tables = FALSE) |> length(), 1)
 })
 
 

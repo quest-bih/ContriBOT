@@ -63,19 +63,52 @@ extract_contributions <- function(text_sentences)
 
 #' remove inserts
 #' @noRd
-.remove_inserts <- function(text_sentences) {
-  tibble::tibble(text = text_sentences, mask = 0) |>
-    dplyr::mutate(mask = ifelse(stringr::str_detect(.data$text, "<insert>"), 1, .data$mask)) |>
-    dplyr::mutate(mask = cumsum(.data$mask)) |>
+.remove_inserts <- function(text_sentences, look_in_tables = FALSE) {
 
+  keyword_list <- .create_keyword_list()
+
+  regex_insert <- stringr::regex("<insert>", ignore_case = TRUE)
+
+  flagged_inserts <- tibble::tibble(text = text_sentences, mask = 0) |>
+    dplyr::mutate(mask =
+                    ifelse(stringr::str_detect(.data$text, regex_insert),
+                           1, .data$mask)) |>
+    dplyr::mutate(mask = cumsum(.data$mask)) |>
     dplyr::group_by(.data$mask) |>
     dplyr::mutate(is_gap = stringr::str_detect(dplyr::lag(.data$text, default = ""), "<iend>") &
-                    !stringr::str_detect(.data$text, "<insert>"),
-                  has_insert = any(stringr::str_detect(.data$text, "<insert>")),
+                    !stringr::str_detect(.data$text, regex_insert),
+                  has_insert =
+                    any(stringr::str_detect(.data$text, regex_insert)),
                   gapsum = cumsum(.data$is_gap)) |>
-    dplyr::mutate(gapsum = ifelse(.data$has_insert == FALSE, 1, .data$gapsum)) |>
+    dplyr::mutate(gapsum = ifelse(.data$has_insert == FALSE, 1, .data$gapsum))
+
+  clean_section <- flagged_inserts |>
     dplyr::filter(.data$gapsum != 0) |>
     dplyr::pull(.data$text)
+
+  if (look_in_tables == TRUE) {
+
+    regex_table <- stringr::regex(keyword_list$table_credit,
+                                  ignore_case = TRUE)
+    contrib_tables <- flagged_inserts |>
+      dplyr::filter(stringr::str_detect(.data$text, regex_table))
+
+    if (nrow(contrib_tables) > 0) {
+      return(
+        flagged_inserts |>
+          dplyr::filter(.data$gapsum == 0) |>
+          dplyr::group_by(.data$mask) |>
+          dplyr::mutate(is_appendix = any(stringr::str_detect(.data$text, regex_table))) |>
+          dplyr::filter(.data$is_appendix == TRUE, .data$text != "<iend>") |>
+          # dplyr::mutate(text = stringr::str_remove(.data$text, regex_insert)) |>
+          dplyr::pull(.data$text) |>
+          stringr::str_remove("^.*(continued\\) |Authors )(?=Name)") |>
+          stringr::str_squish()
+      )
+    }
+  }
+  return(clean_section)
+
 }
 
 #' extract section
@@ -85,10 +118,11 @@ extract_contributions <- function(text_sentences)
   keyword_list <- .create_keyword_list()
 
   section_string <- paste0("(<section>|#+)[^\\w+][\\d,^\\w]*(", section_regexes, ")\\b")
-  if (look_in_tables == TRUE) {
-    section_string <- paste0(section_string, "|", keyword_list$table_credit)
-  } else {
-    text_sentences <- .remove_inserts(text_sentences)
+
+  text_sentences <- .remove_inserts(text_sentences, look_in_tables = look_in_tables)
+
+  if (look_in_tables == TRUE & length(text_sentences) < 5) {
+    return(text_sentences)
   }
 
   section_detections <-

@@ -14,6 +14,7 @@ authorship_section:
   - "Author roles"
   - "Name Location Contribution"
   - "Description of authors[^\\w]? roles"
+  - "Contributions of the Authors"
 
 ackn_section:
   - "A ?c ?k ?n ?o ?w ?l ?e ?d ?g ?e? ?m ?e ?n ?t ?s?"
@@ -27,7 +28,7 @@ orcid_link:
   - "(https?\\://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\w{4})|(https?.*orcid.*(\\d|X))"
 
 table_credit:
-  - "appendix( \\d)? authors"
+  - "<insert> ?\\bAppendix( \\d)? (Authors|\\(cont[^\\w]?(inued)?\\))"
 
 stop_sections:
   - "c ?o ?n ?f ?l ?i ?c ?t ?s?"
