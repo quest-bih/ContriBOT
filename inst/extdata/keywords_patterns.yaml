@@ -139,19 +139,21 @@ equally:
    - "contributed equally to this"
 
 responsibility:
-  - "accountab(le|ility)"
+  - "accountab(le|ility)|overall responsibility"
   - "(?<!credit )authorship( (eligibility|criteria))?"
   - "responsible for (reading|integrity)( and approving)?"
   - "agree to"
-  - "(substantial|direct|intellectual) contribution"
+  - "(substantial|direct|intellectual) contribution.*approved"
   - "(contributed|contributions).*(edited|(critical(ly)? revised|review?)).*approved"
   - "(met criteria|meet the \\w+ criteria)"
   - "undertake to declare"
   - "guarantors?"
   - "adhere to the authorship guildlines"
   - "revising it critically"
-  - "(final|accept|takes?) responsibility"
- # - "(had|has) full access.*?(accept(s)?|take(s|n)?) responsibility"
+  - "contributed.*(approved|approval)"
+  - "(final|accepts?|takes?) responsibility"
+  - "was written through contribution|wrote.*reviewd.*approved"
+  - "(had|has) full access.*?(accept(s)?|take(s|n)?) responsibility.*approved"
 
 narrative:
   - "acted"
