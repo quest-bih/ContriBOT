@@ -2,7 +2,7 @@
 Detection and extraction of Author Contribution statements and Acknowledgements from scientific papers
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-
+RRID:SCR_027089
 
 ContriBOT is a text mining algorithm that parses a set of publications and detects
 which publications included Authorship Statements, Acknowledgements and ORCIDs.
