@@ -25,7 +25,7 @@ orcid_section:
   - "ORCID"
 
 orcid_link:
-  - "(https?\\://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\w{4})|(https?.*orcid.*(\\d|X))"
+  - "(https?\\://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\w{4})|((https?[^\\w]+)?orcid.*(\\d|X))"
 
 table_credit:
   - "<insert> ?\\bAppendix( \\d)? (Authors|\\(cont[^\\w]?(inued)?\\))"
@@ -84,7 +84,7 @@ credit_roles:
   - "validations?|validated"
   - "visuali(z|s)ations?|visuali(z|s)ed"
   - "writing[^\\w]+original[^\\w]+draft[^\\w]+(preparation)?|(original|first) draft|drafting|drafted"
-  - "writing[^\\w]+review[^\\w]+(and|&)?[^\\w]+editing|reviewed|reviewing|revisions|manuscript review"
+  - "\\bwriting[^\\w]+review[^\\w]?((and|&)?[^\\w]+editing)?|reviewed|reviewing|editing|revisions|manuscript review"
   # - "review\\s*[^.,;:]*"
   # - "edit\\s*[^.,;:]*"
   # - "original\\s*[^.,;:]*"
@@ -144,19 +144,20 @@ equally:
    - "contributed equally to this"
 
 responsibility:
+  - "(accepts?|accepted|takes?|took)\\s+(\\w+\\s+)?responsibility"
+  - "(overall|leadership|final) responsibility"
   - "accountab(le|ility)"
-  - "(?<!credit )authorship( (eligibility|criteria))?"
-  - "responsible for (reading|integrity)( and approving)?"
-  - "agree to"
-  - "(substantial|direct|intellectual) contribution"
-  - "(contributed|contributions).*(edited|(critical(ly)? revised|review?)).*approved"
-  - "(met criteria|meet the \\w+ criteria)"
-  - "undertake to declare"
   - "guarantors?"
-  - "adhere to the authorship guildlines"
-  - "revising it critically"
-  - "(final|accept|takes?) responsibility"
- # - "(had|has) full access.*?(accept(s)?|take(s|n)?) responsibility"
+  #- "(?<!credit )authorship( (eligibility|criteria))?"
+  #- "responsible for (reading|integrity)( and approving)?"
+  #- "agree to"
+  #- "(substantial|direct|intellectual) contribution"
+  #- "(contributed|contributions).*(edited|(critical(ly)? revised|review?)).*approved"
+  #- "(met criteria|meet the \\w+ criteria)"
+  #- "undertake to declare"
+  #- "adhere to the authorship guildlines"
+  #- "revising it critically"
+  #- "(had|has) full access.*?(accept(s)?|take(s|n)?) responsibility"
 
 narrative:
   - "acted"
@@ -172,6 +173,7 @@ narrative:
   - "described"
   - "designed"
   - "drafted"
+  - "edited"
   - "established"
   - "extracted"
   - "had"
@@ -190,6 +192,7 @@ narrative:
   - "proposed"
   - "provided"
   - "responsible for"
+  - "revised"
   - "suggested"
   - "supervised"
   - "supported"
