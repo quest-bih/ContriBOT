@@ -164,6 +164,11 @@ extract_contributions <- function(text_sentences)
 
   stop_regex <- keyword_list$stop_sections
 
+  if (stringr::str_detect(section_regexes, "thank")) {
+    stop_regex <- stop_regex[!stringr::str_detect(stop_regex,
+                             "fund|financ")]
+  }
+
   stop_regex <- stop_regex[!stringr::str_detect(stop_regex,
                                                 section_regexes)] |>
     paste(collapse = "|")
