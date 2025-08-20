@@ -21,6 +21,7 @@ Imports:
     furrr,
     lifecycle,
     oddpub,
+    pdftools,
     progressr,
     purrr,
     rlang,

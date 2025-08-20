@@ -1,6 +1,6 @@
 #' Search for ORCID hyperlinks and extract ORCIDs.
 #'
-#' The algorithm searchers for an ORCID and extracts what it finds.
+#' The algorithm searchers for an ORCID and extracts any links that it finds.
 #'
 #' @param pdf_file String with the path to the PDF to be screened.
 #'
@@ -13,24 +13,24 @@
 #'
 #' @export
 extract_orcid_hyperlink <- function(pdf_file) {
-  orcids <- readr::read_file_raw(pdf_file) |>
-    furrr::future_map_chr(rawToChar) |>
+
+  pdf_temp <- file.path(tempdir(), "output.pdf")
+
+  orcids <- pdftools::pdf_combine(pdf_file, output = pdf_temp) |>
+    readr::read_file_raw() |>
+    purrr::map_chr(rawToChar) |>
     paste(collapse = "") |>
     stringr::str_extract_all(stringr::regex("(https?\\://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\w{4})|(https?.*orcid.*(\\d|X))",
                                             ignore_case = TRUE)) |>
     unlist() |>
     unique() |>
     stringi::stri_unescape_unicode()
-  
-  # stringr::str_view("https://orcid.org/000-0002-1162-1318)>>/Type/Annot/Subtype/Link/Rect[301.436 642.104 309.316 652.422]/Border[0 0 0; https://orcid.org/0000-0001-5332-6811; https://orcid.org/0000-0002-4232-3305", "(https?.*orcid.*(\\d|X)(?=(\\)|,)))")
-  
-  # stringr::str_view("http\072\057\057orcid\056org\0570000\0550001\0556389\0550029", "(https?\\://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\w{4})|
-  #   (https?\072\057\057orcid\056org\057\\d{4}\055\\d{4}\055\\d{4}\055\\w{4})")
+
   if (length(orcids) > 1) {
     return(paste(orcids, collapse = "; "))
   } else if (length(orcids) == 0) {
     return("")
-    
+
   } else {
     return(orcids)
   }
@@ -52,7 +52,7 @@ extract_orcid_hyperlink <- function(pdf_file) {
 #'
 #' @export
 extract_orcids_from_folder <- function(pdf_folder) {
-  
+
   pdf_files <- list.files(pdf_folder, full.names = TRUE)
   p <- progressr::progressor(along = pdf_files)
   furrr::future_map_chr(pdf_files, \(x) {

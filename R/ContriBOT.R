@@ -1,4 +1,4 @@
-#' Search for Authorship, Acknowledgement, and ORCID keywords and extract corresponding sections.
+#' Search for Authorship, Acknowledgement, and ORCID keywords and extract corresponding sections or statements.
 #'
 #' The algorithm searchers for a  Authorship, Acknowledgement, and ORCID statements
 #' and extracts them.
@@ -32,25 +32,31 @@ extract_contributions <- function(text_sentences)
       keyword_list$ackn_section,
       look_in_tables = FALSE)
 
-  message("Extracting ORCIDs...")
-  orcid_text_sentences <- text_sentences |>
-    .extract_section_progress(
-      keyword_list$orcid_section,
-      look_in_tables = FALSE)
-
+  # message("Extracting ORCID sections...")
+  # orcid_text_sentences <- text_sentences |>
+  #   .extract_section_progress(
+  #     keyword_list$orcid_section,
+  #     look_in_tables = FALSE)
+  message("Extracting any ORCIDs written out as text...")
+  orcids_anywhere <- .extract_all_orcids_progress(text_sentences, keyword_list$orcid_link)
+# tt <- tib |> mutate(orcids = str_extract_all(text, keyword_list$orcid_link))
   ackn_results <- ackn_text_sentences |>
     .enframe_results(name = "article", value = "ackn_statement")
 
-  orcid_results <- orcid_text_sentences |>
-    .enframe_results(name = "article", value = "orcid_statement")
+  # orcid_results <- orcid_text_sentences |>
+  #   .enframe_results(name = "article", value = "orcid_statement")
+
+  orcids_anywhere_results <- orcids_anywhere |>
+    .enframe_results(name = "article", value = "orcids_as_text")
 
   contrib_text_sentences |>
     .enframe_results(name = "article", value = "contrib_statement") |>
     dplyr::left_join(ackn_results, by = "article") |>
-    dplyr::left_join(orcid_results, by = "article") |>
+    # dplyr::left_join(orcid_results, by = "article") |>
+    dplyr::left_join(orcids_anywhere_results, by = "article") |>
     dplyr::mutate(has_contrib = .data$contrib_statement != "",
                   has_ackn = .data$ackn_statement != "",
-                  has_orcid = .data$orcid_statement != "")
+                  has_orcid = .data$orcids_as_text != "")
 }
 
 #' convert results from list to tibble
@@ -148,6 +154,13 @@ extract_contributions <- function(text_sentences)
     stringr::str_trim()
   str_section_sameline <- str_section |>
     stringr::str_remove(stringr::regex(section_string, ignore_case = TRUE))
+  str_section_location <- stringr::str_locate(str_section, stringr::regex(section_string, ignore_case = TRUE))
+
+  if (str_section_location[1] > 1) {
+    text_sentences[section_start] <- stringr::str_sub(text_sentences[section_start],
+                                                      str_section_location[1],
+                                                      stringr::str_length(text_sentences[section_start]))
+  }
 
   stop_regex <- keyword_list$stop_sections
 
@@ -213,4 +226,28 @@ extract_contributions <- function(text_sentences)
                        look_in_tables = look_in_tables)
 
       })
+}
+
+#' extract any orcids from a list of papers with progress bar
+#' @noRd
+.extract_all_orcids_progress <- function(text_sentences, orcid_regex) {
+  p <- progressr::progressor(along = text_sentences)
+  text_sentences |>
+    furrr::future_map(\(x) {
+      p()
+      .extract_all_orcids(x, orcid_regex)
+    })
+}
+
+#' extract any orcids from a vector of strings
+#' @noRd
+.extract_all_orcids <- function(str_vec, orcid_regex) {
+  # tt <-
+  str_vec |>
+    stringr::str_extract_all(orcid_regex, simplify = TRUE) |>
+    unique() |>
+    dplyr::na_if("") |>
+    stats::na.omit() |>
+    paste(collapse = ";")
+
 }

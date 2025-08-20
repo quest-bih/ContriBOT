@@ -13,7 +13,7 @@ extract_orcid_hyperlink(pdf_file)
 String with the ORCIDs
 }
 \description{
-The algorithm searchers for an ORCID and extracts what it finds.
+The algorithm searchers for an ORCID and extracts any links that it finds.
 }
 \examples{
 \dontrun{

@@ -24,8 +24,8 @@ devtools::install_github("quest-bih/ContriBOT")
 ## Description
 
 ContriBOT is a tool that searches for typical section headings preceded by
-a section tag, in order to extract the author contribution, acknowledgement,
-and ORCID sections. The extracted author contribution section can then be
+a section tag, in order to extract the author contribution and acknowledgement sections,
+as well as ORCID mentions. The extracted author contribution section can then be
 further screened and categorized, for example for following the CRediT taxonomy,
 or including actual author contributions.
 
@@ -101,6 +101,24 @@ credit_results <- classify_contributions(contrib_extractions, article, contrib_s
   # for convenience, the DOI can be obtained from the article column
   mutate(doi = stringr::str_replace_all(article, "\\+", "\\/") |> 
   stringr::str_remove(".txt"))
+```
+
+### ORCID extraction
+
+The workflow above will extract only the mentions of ORCIDs that are written out in the text of the PDF.
+If you would also like to extract any hyperlinks (e.g. visible only as the ORCID icon), then
+`extract_orcids_from_folder` is your friend. This function will process a folder of PDFs
+and extract any hyperlink from the PDF.
+Here is how to integrate this output into your table of ORCIDs exctracted with the `extract_contributions`
+function:
+
+```r
+orcid_hyperlinks <- extract_orcids_from_folder(pdf_folder)
+
+orcids_anywhere <- tibble(article = list.files(pdf_folder),
+                       orcid_hyperlinks) |> 
+                       left_join(credit_extractions, by = "article") |> 
+                       select(article, contains("orcid"), everything())
 ```
 
 ## License

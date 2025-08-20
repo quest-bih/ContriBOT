@@ -22,10 +22,10 @@ ackn_section:
   - "Additional contributions"
 
 orcid_section:
-  - "ORCID"
+  - "ORCIDs?[^\\w]+"
 
 orcid_link:
-  - "(https?\\://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\w{4})|((https?[^\\w]+)?orcid.*(\\d|X))"
+  - "((https?\\://orcid\\.org/)?\\d{4}-\\d{4}-\\d{4}-\\w{4})|((https?[^\\w]+)?orcid.*(\\d|X))"
 
 table_credit:
   - "<insert> ?\\bAppendix( \\d)? (Authors|\\(cont[^\\w]?(inued)?\\))"

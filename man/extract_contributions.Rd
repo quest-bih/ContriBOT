@@ -2,7 +2,7 @@
 % Please edit documentation in R/ContriBOT.R
 \name{extract_contributions}
 \alias{extract_contributions}
-\title{Search for Authorship, Acknowledgement, and ORCID keywords and extract corresponding sections.}
+\title{Search for Authorship, Acknowledgement, and ORCID keywords and extract corresponding sections or statements.}
 \usage{
 extract_contributions(text_sentences)
 }

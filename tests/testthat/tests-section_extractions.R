@@ -176,11 +176,12 @@ test_that("contribution_extraction", {
 
 test_that("orcid_extraction",
           {
-            expect_equal(.extract_section(contrib2,
-                                          keywords$orcid_section,
-                                          look_in_tables = FALSE) |> length(), 4)
-            expect_equal(.extract_section(contrib_wiley,
-                                          keywords$orcid_section,
-                                          look_in_tables = FALSE) |> length(), 3)
+            expect_true(stringr::str_detect("0000-0000-0000-0000", keywords$orcid_link))
+            expect_true(stringr::str_detect("1234-1234-1234-123X", keywords$orcid_link))
+            expect_equal(.extract_all_orcids(contrib2,
+                                          keywords$orcid_link),
+                         "http://orcid.org/0000-0000-0000-0000;http://orcid.org/0000-0000-0000-000X")
+            expect_equal(.extract_all_orcids(contrib_wiley,
+                                          keywords$orcid_link), "https://orcid.org/0000-0000-0000-0000")
           })
 
