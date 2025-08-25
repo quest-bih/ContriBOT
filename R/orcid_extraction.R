@@ -16,10 +16,11 @@ extract_orcid_hyperlink <- function(pdf_file) {
 
   pdf_temp <- file.path(tempdir(), "output.pdf")
 
-  orcids <- pdftools::pdf_combine(pdf_file, output = pdf_temp) |>
+  orcids <- pdftools::pdf_combine(pdf_files[1], output = pdf_temp) |>
     readr::read_file_raw() |>
     purrr::map_chr(rawToChar) |>
     paste(collapse = "") |>
+    .remove_author_info_tag() |>
     stringr::str_extract_all(stringr::regex("(https?\\://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\w{4})|(https?.*orcid.*(\\d|X))",
                                             ignore_case = TRUE)) |>
     unlist() |>
@@ -34,6 +35,15 @@ extract_orcid_hyperlink <- function(pdf_file) {
   } else {
     return(orcids)
   }
+}
+
+#' Some Nature papers have false metadata listing ORCIDs not appearing in text or as hyperlinks
+#' This function removes the authorinfo tag contents, with the faulty ORCID inside
+#' @noRd
+.remove_author_info_tag <- function(meta_text) {
+  stringr::str_remove_all(meta_text, stringr::regex("sn\\:authorinfo.*sn\\:authorinfo",
+                                             ignore_case = TRUE,
+                                             dotall = TRUE))
 }
 
 #' Search for ORCID hyperlinks and extract ORCIDs from a folder of PDF files.
