@@ -78,6 +78,9 @@ each txt file:
 ```r
 contrib_extractions <- extract_contributions(text_corpus)
 ```
+The estimated presence of an Author Contribution Section, Acknowledgement section, and
+any ORCIDs that were written out as text in the article are in the output variables
+`has_contrib`, `has_ackn`, and `has_orcid`, respectively.
 
 Finally, the extracted text of the author contribution section can be classified
 and categorized with the following output variables:  
