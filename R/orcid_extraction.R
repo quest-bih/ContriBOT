@@ -16,7 +16,7 @@ extract_orcid_hyperlink <- function(pdf_file) {
 
   pdf_temp <- file.path(tempdir(), "output.pdf")
 
-  orcids <- pdftools::pdf_combine(pdf_files[1], output = pdf_temp) |>
+  orcids <- pdftools::pdf_combine(pdf_file, output = pdf_temp) |>
     readr::read_file_raw() |>
     purrr::map_chr(rawToChar) |>
     paste(collapse = "") |>
