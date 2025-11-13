@@ -95,9 +95,8 @@ and categorized with the following output variables:
  - narrative_estimate: whether the author contributions (CRediT or non-CRediT) are
  written out as full sentences with verbs in the past tense such as 
  "Author X.Y. conceptualized and supervised the study."  
- - authorship_estimate: whether the statement includes a sentence about authors 
- qualifying for authorship, fulfilling authorship criteria, or taking responsibility for
- the text or data analysis.  
+ - responsibility_estimate: whether the statement includes a sentence about authors 
+ taking responsibility for the text or data analysis.  
 
 ```r
 credit_results <- classify_contributions(contrib_extractions, article, contrib_statement) |>
