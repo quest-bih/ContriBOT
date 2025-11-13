@@ -116,12 +116,15 @@ Here is how to integrate this output into your table of ORCIDs exctracted with t
 function:
 
 ```r
-orcid_hyperlinks <- extract_orcids_from_folder(pdf_folder)
+orcid_hyperlinks <- extract_orcids_from_folder(pdf_folder) |> 
+    
 
-orcids_anywhere <- tibble(article = list.files(pdf_folder),
-                       orcid_hyperlinks) |> 
-                       left_join(credit_extractions, by = "article") |> 
-                       select(article, contains("orcid"), everything())
+orcids_anywhere <- tibble(doi = list.files(pdf_folder) |>
+                            str_remove(".pdf") |> str_replace_all("\\+", "\\/"),
+                          orcid_hyperlinks) |>
+  left_join(credit_extractions |>
+              mutate(doi = str_remove(article, ".txt") |> str_replace_all("\\+", "\\/")), by = "doi") |>
+  select(article, contains("orcid"), everything())
 ```
 
 ## License
