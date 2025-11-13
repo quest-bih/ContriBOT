@@ -21,8 +21,8 @@ Tibble with one row per screened document and logical values for
 credit_estimate (whether or not the statement follows CREdiT),
 contrib_estimate (whether or not author roles are listed at all),
 narrative_estimate (whether or not author roles are given with sentences
-containing verbs), and authorship_estimate (whether or not a statement about
-the authors fulfilling authorship criteria is included).
+containing paste tense verbs), and responsibility_estimate (whether or not
+a statement about an author assumes responsibility for the work).
 }
 \description{
 Classify statements for CRediT, narrative, and authorship criteria.

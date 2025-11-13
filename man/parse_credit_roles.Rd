@@ -2,7 +2,8 @@
 % Please edit documentation in R/parsers.R
 \name{parse_credit_roles}
 \alias{parse_credit_roles}
-\title{Parse an authorship statement that is list-formatted, especially as CRediT, and extract
+\title{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Parse an authorship statement that is list-formatted, especially as CRediT, and extract
 the authors and roles into a tidy tibble, with a single author and role per row.}
 \usage{
 parse_credit_roles(credit_str)
@@ -16,6 +17,7 @@ Tibble with one row per author and role, or NA if the statement could
 not be parsed, for example if narrative or formatted in a non-standardized way.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Parse an authorship statement that is list-formatted, especially as CRediT, and extract
 the authors and roles into a tidy tibble, with a single author and role per row.
 }

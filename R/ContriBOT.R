@@ -210,7 +210,7 @@ extract_contributions <- function(text_sentences)
                                                    stringr::regex("plos",
                                                                   ignore_case = TRUE)),
                                na.rm = TRUE)) {
-    section <- oddpub::splice_plos_twopager(section)
+    section <- oddpub::splice_margin_text(section)
   }
   section |>
     stringr::str_remove_all("\\u200b") |> # remove zerowidth spaces

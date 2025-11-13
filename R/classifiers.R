@@ -12,8 +12,8 @@
 #'  credit_estimate (whether or not the statement follows CREdiT),
 #'  contrib_estimate (whether or not author roles are listed at all),
 #'  narrative_estimate (whether or not author roles are given with sentences
-#'  containing verbs), and authorship_estimate (whether or not a statement about
-#'  the authors fulfilling authorship criteria is included).
+#'  containing paste tense verbs), and responsibility_estimate (whether or not
+#'  a statement about an author assumes responsibility for the work).
 #'
 #' @examples
 #' \dontrun{
@@ -78,7 +78,7 @@ classify_contributions <- function(tib, key_col, statement_col) {
       ),
       contrib_estimate = factor(.data$contrib_estimate, levels = c(TRUE, FALSE)),
       narrative_estimate = factor(.data$is_narrative, levels = c(TRUE, FALSE)),
-      authorship_estimate = factor(.data$is_responsibility,
+      responsibility_estimate = factor(.data$is_responsibility,
                                    levels = c(TRUE, FALSE))
       ) |>
     dplyr::select(dplyr::all_of(c(rlang::as_name(rlang::enquo(key_col)), cols_no_key)),
